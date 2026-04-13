@@ -1,0 +1,40 @@
+# byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+
+# tests and coverage
+*.pytest_cache
+.coverage
+
+# database & logs
+*.db
+*.sqlite3
+*.log
+
+# configs
+.env
+.ini
+
+# venv
+env
+venv
+
+# other
+.DS_Store
+
+# javascript
+package-lock.json
+
+staticfiles/*
+!staticfiles/.gitkeep 
+.vscode/*
+
+uploadfiles/csv_files/*
+uploadfiles/AJE/*
+app/controllers/helpers/aje_export_module/output/*
+app/forms/data/*
+
+id_rsa.pub
+db_dump/*
+
+*.code-workspace
