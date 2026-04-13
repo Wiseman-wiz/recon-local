@@ -1,0 +1,244 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Dashboard {% endblock %} 
+
+<!-- Element injected in the BODY element -->
+{% block body_class %} sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed {% endblock body_class %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="/static/assets/plugins/fontawesome-free/css/all.min.css">
+  <!-- overlayScrollbars -->
+  <link rel="stylesheet" href="/static/assets/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+  <!-- Select2 -->
+  <link rel="stylesheet" href="/static/assets/plugins/select2/css/select2.min.css">
+  <link rel="stylesheet" href="/static/assets/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="/static/assets/css/adminlte.min.css">
+
+{% endblock stylesheets %}
+
+{% block content %}
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">Bank Recon Reports</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+              <li class="breadcrumb-item"><a href="{% url 'bank-recon' %}">Bank Reconxx</a></li>
+              <li class="breadcrumb-item active">Reports</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+            {% include 'includes/messages.html' %}
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title w-100 pb-1">Create New Report</h4>
+                        {% if form_1 %}
+                            <div class="form-group">
+                                <form action="{% url 'bank-balance' %}"method="POST">
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <div class="col">
+                                            Credit:{{form_1.s1}}
+                                        </div>
+                                        <div class="col">
+                                            Debit:{{form_1.s2}}
+                                        </div>
+                                        <div class="col">
+                                            GL: {{form_1.gl}}
+                                        </div>
+                                    </div>
+                                    <div class="row mt-3">
+                                        <div class="col">
+                                            <input class="btn btn-primary" type="submit" value="Submit" name="submit">
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        {% endif %}
+                        {% if form_2 %}
+                            <div>
+                                <form action="{% url 'bank-balance' %}"method="POST">
+                                    {% csrf_token %}
+                                    <br>
+                                    <div class="row">
+                                        <div class="btn {{button_success}}" style="width: 100%;">SOURCE:  {{source}} <br> TARGET: {{target}}</div>
+                                    
+                                    </div>
+                                    <br>
+                                    {{form_5}}
+                                    <br>
+                                    <input type="text" name="var_source" value={{source}} hidden="True">
+                                    <input type="text" name="var_target" value={{target}} hidden="True">
+                                    <div class="row">
+                                        <input type="submit" class="btn {{button_success}}">
+                                    </div>
+                                    <br>
+                                    <div class="row">
+                                        <div class="col">
+                                            <center>
+                                            <div class="btn-inverse-success">Sample Data : SOURCE TARGET</div>
+                                            </center>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <table class="table table-hover table-striped">
+                                                <tbody>
+                                                
+                                                    {% for key,value in source_data.items %}
+                                                        <tr><td>{{key}} : {{value}}</td></tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="col">
+                                            <table class="table table-hover table-striped">
+                                                <tbody>
+                                                
+                                                    {% for key,value in target_data.items %}
+                                                        <tr><td>{{key}} : {{value}}</td></tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <br>
+
+                                    <div class="row">
+                                        <div class="col">
+                                            <center>
+                                            <div class="btn-inverse-success">Select Match Statements</div>
+                                            </center>
+                                            <table class="table table-hover table-striped">
+                                                <thead>
+                                                    <th>Source Fields</th>
+                                                    <th>Target Fields</th>
+                                                </thead>
+                                                <tbody>
+                                                    {{form_2}}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="row">
+                                        <div class="col">
+                                            <center>
+                                            <div class="btn-inverse-success">Select Filter Statements</div>
+                                            </center>
+                                            <table class="table table-hover table-striped">
+                                                <thead>
+                                                    <th>Source Fields</th>
+                                                    <th>Source Filters</th>
+                                                </thead>
+                                                <tbody>
+                                                    {{form_3}}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="col">
+                                            <center>
+                                            <div class="btn-inverse-success">Select Filter Statements</div>
+                                            </center>
+                                            <table class="table table-hover table-striped">
+                                                <thead>
+                                                    <th>Source Fields</th>
+                                                    <th>Source Filters</th>
+                                                </thead>
+                                                <tbody>
+                                                    {{form_4}}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        
+    
+        <div class="d-flex justify-content-center">
+            <input class="btn {{button_success}} mx-1 btn-show-less" id="lessButton" type="button" value="Show Less" onclick="showLess()"/>
+            <input class="btn {{button_success}} mx-1 btn-show-more" id="moreButton" type="button" value="Show More" onclick="showMore()"/>
+        </div>
+      </div><!--/. container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+  <!-- REQUIRED SCRIPTS -->
+  <!-- jQuery -->
+  <script src="/static/assets/plugins/jquery/jquery.min.js"></script>
+  <!-- Bootstrap -->
+  <script src="/static/assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <!-- Select2 -->
+  <script src="/static/assets/plugins/select2/js/select2.full.min.js"></script>
+  <!-- overlayScrollbars -->
+  <script src="/static/assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+  <!-- AdminLTE App -->
+  <script src="/static/assets/js/adminlte.js"></script>
+
+  <!-- PAGE PLUGINS -->
+  <!-- ChartJS -->
+  <script src="/static/assets/plugins/chart.js/Chart.min.js"></script>
+
+  <!-- PAGE SCRIPTS -->
+  <!-- <script src="/static/assets/js/pages/dashboard2.js"></script> -->
+  <script src="/static/assets/js/app/reports.js"></script>
+  <script src="/static/assets/js/app/search.js"></script>
+  <script>
+      $(function() {
+        
+        //Initialize Select2 Elements
+        $('.select2').select2()
+
+        //Initialize Select2 Elements
+        $('.select2bs4').select2({
+          theme: 'bootstrap4',
+        })
+
+        $(document).on('mouseenter', ".text-truncate", function () {
+            var $this = $(this);
+            if (this.offsetWidth < this.scrollWidth && !$this.attr('title')) {
+                $this.tooltip({
+                    title: $this.text(),
+                    placement: "bottom"
+                });
+                $this.tooltip('show');
+            }
+        });
+      })
+  </script>
+{% endblock javascripts %}

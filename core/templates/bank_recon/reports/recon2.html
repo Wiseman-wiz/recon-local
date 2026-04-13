@@ -1,0 +1,249 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Dashboard {% endblock %} 
+
+<!-- Element injected in the BODY element -->
+{% block body_class %} sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed {% endblock body_class %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="/static/assets/plugins/fontawesome-free/css/all.min.css">
+  <!-- overlayScrollbars -->
+  <link rel="stylesheet" href="/static/assets/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+  <!-- Select2 -->
+  <link rel="stylesheet" href="/static/assets/plugins/select2/css/select2.min.css">
+  <link rel="stylesheet" href="/static/assets/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="/static/assets/css/adminlte.min.css">
+
+{% endblock stylesheets %}
+
+{% block content %}
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">Bank Recon Reports</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+              <li class="breadcrumb-item"><a href="{% url 'bank-recon' %}">Bank Recon</a></li>
+              <li class="breadcrumb-item active">Reports</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+            {% include 'includes/messages.html' %}
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="col">
+                          Select Period
+                          <br>
+                          Start
+                          <input size=10 type="date">
+                          End
+                          <input size=10 type="date"> 
+                          <button class="btn btn-success">Edit Temp</button>
+
+                        </div>
+                        
+
+                      </div>
+                        <div class="row">
+                            <div class="col">
+                              
+                                GL Cash Balance:  11,337,356.47 
+                                <br>
+                                <table class="table">
+                                    <tbody>
+                                        <tr>
+                                            <td>Debit</td>
+                                            <td>Credit</td>
+                                            <td>Total</td>
+                                            <td>Outstanding Checks</td>
+                                            <td>Stale Checks</td>
+                                            <td>Balance</td>
+                                            
+                                            
+                                        </tr>
+                                        <tr>
+                                            <td>6,445,955.37</td>
+                                            <td>(8,660,143.89)</td>
+                                            <td>9,123,167.95</td>
+                                            <td>444,685.70</td>
+                                            <td></td>
+                                            <td>8,350,309.72</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col">
+                                Passbook Cash Balance:  11,337,356.77 
+                                <table class="table">
+                                    <tbody>
+
+                                        <tr>
+                                            <td>Credit</td>
+                                            <td>Debit</td>
+                                            <td>Total</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td>Balance</td>
+                                        </tr>
+                                        <tr>
+                                            <td>(3,554,044.63)</td>
+                                            <td>566,997.88</td>
+                                            <td>8,350,310.02</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td>8,350,310.02</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <h3>Create Adjusting Entries</h3>
+                    <button class="btn btn-success">Resolve</button>
+                    <button class="btn btn-success">Add Record</button>
+                    <button class="btn btn-success">Download AJE</button>
+                      <div class="row">
+                        <div class="col">
+                          <table class="table">
+                            <thead>
+                              <th>From Table</th>
+                              <th>Trans No Adj</th>
+                              <th>Trans Date</th>
+                              <th>Deb Amount</th>
+                              <th>Cred Amount</th>
+                              <th>Trans No Record</th>
+                              <th>Adj Type Code</th>
+                              <th>Description</th>
+                            </thead>
+                              <td> GL </td>
+                              <td> <input size=10 type="text"> </td> 
+                              <td> <input size=10 type="date"> </td>
+                              <td> <input size=10 type="text"> </td> 
+                              <td> <input size=10 type="text"> </td>
+                              <td> <input size=10 type="text"> </td>
+                              <td> 
+                                <select>
+                                  <option value="04-10"> 04-10 </option> 
+                                  <option value="04-20"> 04-20 </option> 
+                                  <option value="04-30"> 04-30 </option> 
+                                  <option value="04-40"> 04-40 </option> 
+                                  <option value="04-50"> 04-50 </option> 
+                                  <option value="04-60"> 04-60 </option> 
+                                  <option value="04-70"> 04-70 </option> 
+                                  <option value="04-71"> 04-71 </option> 
+                                  <option value="04-72"> 04-72 </option> 
+                                  <option value="04-73"> 04-73 </option> 
+                                </select> 
+                              </td> 
+                              <td> <input size=10 type="text"> </td>
+                            </tbody>
+                          </table>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+          </div>
+        </div>
+
+        
+        
+    
+        <div class="d-flex justify-content-center">
+            <input class="btn {{button_success}} mx-1 btn-show-less" id="lessButton" type="button" value="Show Less" onclick="showLess()"/>
+            <input class="btn {{button_success}} mx-1 btn-show-more" id="moreButton" type="button" value="Show More" onclick="showMore()"/>
+        </div>
+      </div><!--/. container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+  <!-- REQUIRED SCRIPTS -->
+  <!-- jQuery -->
+  <script src="/static/assets/plugins/jquery/jquery.min.js"></script>
+  <!-- Bootstrap -->
+  <script src="/static/assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <!-- Select2 -->
+  <script src="/static/assets/plugins/select2/js/select2.full.min.js"></script>
+  <!-- overlayScrollbars -->
+  <script src="/static/assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+  <!-- AdminLTE App -->
+  <script src="/static/assets/js/adminlte.js"></script>
+
+  <!-- PAGE PLUGINS -->
+  <!-- ChartJS -->
+  <script src="/static/assets/plugins/chart.js/Chart.min.js"></script>
+
+  <!-- PAGE SCRIPTS -->
+  <!-- <script src="/static/assets/js/pages/dashboard2.js"></script> -->
+  <script src="/static/assets/js/app/reports.js"></script>
+  <script src="/static/assets/js/app/search.js"></script>
+  <script>
+      $(function() {
+        
+        //Initialize Select2 Elements
+        $('.select2').select2()
+
+        //Initialize Select2 Elements
+        $('.select2bs4').select2({
+          theme: 'bootstrap4',
+        })
+
+        $(document).on('mouseenter', ".text-truncate", function () {
+            var $this = $(this);
+            if (this.offsetWidth < this.scrollWidth && !$this.attr('title')) {
+                $this.tooltip({
+                    title: $this.text(),
+                    placement: "bottom"
+                });
+                $this.tooltip('show');
+            }
+        });
+      })
+  </script>
+{% endblock javascripts %}

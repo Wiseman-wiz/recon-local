@@ -1,0 +1,25 @@
+#go-top-btn {
+    width: 50px;
+    height: 50px;
+    position: fixed;
+    text-align: center;
+    padding: 0;
+    font-size: 33px;
+    bottom: 30px;
+    right: 30px;
+    z-index: 500;
+    -webkit-transition: background-color .3s, 
+   opacity .5s, visibility .5s;
+    -o-transition: background-color .3s, 
+   opacity .5s, visibility .5s;
+    transition: background-color .3s, 
+   opacity .5s, visibility .5s;
+    opacity: 0;
+    visibility: hidden; }
+    #go-top-btn.show {
+      opacity: 1;
+      visibility: visible; }
+
+table.dataTable>thead .sorting:before, table.dataTable>thead .sorting:after, table.dataTable>thead .sorting_asc:before, table.dataTable>thead .sorting_asc:after, table.dataTable>thead .sorting_desc:before, table.dataTable>thead .sorting_desc:after, table.dataTable>thead .sorting_asc_disabled:before, table.dataTable>thead .sorting_asc_disabled:after, table.dataTable>thead .sorting_desc_disabled:before, table.dataTable>thead .sorting_desc_disabled:after {
+  bottom: 0.2em;
+}

@@ -1,0 +1,70 @@
+{
+    "db":{
+        "db_name":"BDC_bank_recon",
+        "col":{
+            "bank_account":{
+                "sub_account":{
+                    "dtype":"str",
+                    "desc":""
+                },
+                "acct_number":{
+                    "dtype":"str",
+                    "desc":""
+                },
+                "bank_name":{
+                    "dtype":"str",
+                    "desc":""
+                },
+                "bank_branch":{
+                    "dtype":"str",
+                    "desc":""
+                },
+                "account_type_1":{
+                    "dtype":"ObjectId()",
+                    "desc":"",
+                    "ref":"bank_account_types.account_type_1._id"
+                },
+                "account_type_2":{
+                    "dtype":"ObjectId()",
+                    "desc":"",
+                    "ref":"bank_account_types.account_type_2._id"
+                }
+            },
+            "bank_account_types":{
+                "account_type_1":{
+                    "dtype":"str",
+                    "desc":""
+                },
+                "account_type_2":{
+                    "dtype":"str",
+                    "desc":""
+                }
+            }
+        },
+        "general_ledger":{
+            "_id" : "ObjectId()",
+            "trndate" : "ISODate()",
+            "trnno" : "B00942916",
+            "subacct" : "1001-108",
+            "other_01" : "BONGGO, PRINCESS ALFANOSO",
+            "other_03" : "SC220001",
+            "dr_amt" : 11475.58,
+            "cr_amt" : 0,
+            "ref_1" : "C-01",
+            "ref_2" : "C-01",
+            "approved" : "pending",
+            "date_modified" : "ISODate()"
+        },
+        "bank_statement":{
+                "_id" : "ObjectId()",
+                "transaction_date" : "ISODate()",
+                "transaction_description" : "DP",
+                "debit_amount" : 0,
+                "credit_amount" : 81117.79,
+                "transaction_reference" : "SC220001",
+                "account_number" : "447-7-44751351-6",
+                "approved" : "pending",
+                "date_modified" : "ISODate()"
+        }
+    }
+}

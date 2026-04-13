@@ -1,0 +1,18 @@
+{% if accounts_fileds_form %}
+<form action="{{account}}" method="POST">
+    {% csrf_token %}
+    <label for="report_name">Report Name:</label>
+    <input type="text" id="report_name" name="report_name" required><br><br>
+        <div class="form-row">
+            <div>
+                <label for="start_date">Start Date:</label>
+                <input type="date" id="start_date" name="start_date" required>
+            </div>
+            <div>
+                <label for="end_date">End Date:</label>
+                <input type="date" id="end_date" name="end_date" required>
+            </div>
+        </div>
+        <input type="submit" value="Generate Report">
+    </form>
+{% endif %}

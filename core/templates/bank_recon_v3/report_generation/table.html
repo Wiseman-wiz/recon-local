@@ -1,0 +1,45 @@
+{% if initial_data %}
+        <h3>REPORT</h3>
+        {% for k,v in initial_data.data.items %}
+        <div class="row">
+            <div class="col-2">
+                <p>{{k}}:  </p>
+            </div>
+            <div class="col-2">
+                <p>{{v}}</p> 
+            </div>
+        </div>
+        {% endfor %}
+        <div class="row">
+            <div class="col-12">
+                asd
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-12">
+                <table class="table table-striped table-inverse table-responsive">
+                    <thead class="thead-inverse">
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td scope="row"></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td scope="row"></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                </table>
+                {{reports}}
+            </div>
+        </div>
+{% endif %}

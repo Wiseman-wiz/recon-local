@@ -1,0 +1,650 @@
+{% extends 'layouts/base.html' %}
+{% load humanize %}
+{% block title %}
+  Dashboard
+{% endblock %}
+
+<!-- Element injected in the BODY element -->
+{% block body_class %}
+  sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed
+{% endblock %}
+
+<!-- Specific Page CSS goes HERE -->
+{% block stylesheets %}
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback" />
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="/static/assets/plugins/fontawesome-free/css/all.min.css" />
+  <!-- overlayScrollbars -->
+  <link rel="stylesheet" href="/static/assets/plugins/overlayScrollbars/css/OverlayScrollbars.min.css" />
+
+  <link rel="stylesheet" href="/static/assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css" />
+  <link rel="stylesheet" href="/static/assets/plugins/datatables-responsive/css/responsive.bootstrap4.min.css" />
+  <link rel="stylesheet" href="/static/assets/plugins/datatables-buttons/css/buttons.bootstrap4.min.css" />
+  <link rel="stylesheet" href="/static/assets/plugins/datatables-searchbuilder/css/searchBuilder.bootstrap4.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="/static/assets/css/adminlte.min.css" />
+{% endblock %}
+
+{% block content %}
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">Bank Recon Record</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item">
+                <a href="{% url 'bank-recon' %}">Bank Recon</a>
+              </li>
+              <li class="breadcrumb-item">
+                <a href="{% url 'bank-recon-records-main' %}">Records</a>
+              </li>
+              <li class="breadcrumb-item active">{{ collection|upper }}</li>
+            </ol>
+          </div>
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+      </div>
+      <!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          {% include 'includes/messages.html' %}
+          {% if 'finance_admin' in groups or 'uploaders' in groups %}
+            <div class="col-xl-12 mb-3">
+              <div class="btn-group" role="group" aria-label="button_menu">
+                <button type="button" class="btn {{ button_success }} btn-icon-text" data-toggle="modal" data-target="#upload_new_format" style="display: none;"><i class="fas fa-file-upload"></i> Upload Records</button>
+                <a href="{% url 'bank-recon-export' filename=collection %}" class="btn {{ button_success }}" role="button" target="_blank" rel="noopener noreferrer" style="display: none;"><i class="fas fa-file-download"></i> Download CSV Headers</a>
+              </div>
+
+              <div class="modal fade" id="upload_new_format" tabindex="-1" aria-labelledby="upload_new_format_label" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                  <div class="modal-content">
+                    <form action="/bank-recon-records/{{ collection|slugify }}" method="post" enctype="multipart/form-data">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="upload_new_format_label">Upload File</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                      </div>
+                      <div class="card">
+                        <div class="card-body">
+                          <div class="modal-body">
+                            <div class="form-group">
+                              <div class="alert alert-warning" role="alert">
+                                <h6 class="alert-heading my-0 text-bold">NOTE</h6><hr class="my-1" />
+                                <h6 class="text-bold">For appending records, you can download the csv template headers to view the required headers in that record.</h6>
+                                <h6 class="text-bold">For date and time format, use mm-dd-yyyy-hh:mm:ss format</h6>
+                                <h6 class="text-bold">Sample datetime format: 01-30-2000-23:59:59</h6>
+                              </div>
+                              <label>Upload File</label>
+                              <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="customFile" name="file_upload" accept=".csv" />
+                                <label class="custom-file-label" for="customFile">Upload CSV</label>
+                              </div>
+                            </div>
+                            {% if approved or pending or rejected %}
+                              <div class="form-group">
+                                <select class="form-control col-4" id="fileOperation" name="file_operation">
+                                  <option value="append" selected>Append</option>
+                                  <option value="overwrite">Overwrite</option>
+                                </select>
+                              </div>
+                            {% else %}
+                              <input type="hidden" name="file_operation" value="new" />
+                            {% endif %}
+                          </div>
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn {{ button_success }}">Upload File</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% endif %}
+          <div class="col-12">
+            <div class="card card-success card-outline card-tabs">
+              <div class="card-header p-0 pt-1 border-bottom-0">
+                <ul class="nav nav-tabs" id="custom-tabs-three-tab" role="tablist">
+                  <li class="nav-item">
+                    <a class="nav-link active" id="approved-tab" data-toggle="tab" href="#approved" role="tab" aria-controls="approved" aria-selected="false">Approved</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" id="for-approval-tab" data-toggle="tab" href="#for-approval" role="tab" aria-controls="for-approval" aria-selected="false">For Approval</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link d-none" id="not-approved-tab" data-toggle="tab" href="#not-approved" role="tab" aria-controls="not-approved" aria-selected="true">Not Approved</a>
+                  </li>
+                </ul>
+              </div>
+              <div class="card-body p-0">
+                <div class="tab-content" id="custom-tabs-three-tabContent">
+                  <div class="tab-pane fade show active" id="approved" role="tabpanel" aria-labelledby="approved-tab">
+                    <div class="card">
+                      <div class="card-body">
+                        <div class="row">
+                          <div class="col-12">
+                            <h4 class="card-title pb-2 w-100 font-weight-bold" id="file-export-name">{{ collection|upper }}</h4>
+                            {% if approved %}
+                              <table id="tbl-approved" class="display nowrap compact dt-responsive table-striped w-100 dt-tbl">
+                                <thead>
+                                  <tr>
+                                    {% for key in approved|first %}
+                                      {% if '_id' not in key %}
+                                        <th>{{ key|upper }}</th>
+                                      {% endif %}
+                                    {% endfor %}
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {% for row in approved %}
+                                    <tr>
+                                      {% for key, value in row.items %}
+                                        {% if '_id' not in key %}
+                                          <td>{{ value }}</td>
+                                        {% endif %}
+                                      {% endfor %}
+                                    </tr>
+                                  {% endfor %}
+                                </tbody>
+                              </table>
+                            {% else %}
+                              <table id="tbl-approved" class="display nowrap compact dt-responsive table-striped w-100 dt-tbl">
+                                <thead>
+                                  <tr>
+                                    <td>--</td>
+                                  </tr>
+                                </thead>
+                                <tbody></tbody>
+                              </table>
+                            {% endif %}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="tab-pane fade" id="for-approval" role="tabpanel" aria-labelledby="for-approval-tab">
+                    <div class="card">
+                      <div class="card-body">
+                        <div class="row">
+                          <div class="col-12">
+                            <h4 class="card-title pb-2 w-100 font-weight-bold" id="report-name">{{ collection|upper }}</h4>
+                            <form action="/bank-recon-records/{{ collection|slugify }}" method="post">
+                              {% csrf_token %}
+                              <input type="hidden" name="collection" value="{{ collection }}" />
+                              <div class="modal fade" id="delete_record" tabindex="-1" aria-labelledby="delete_record_label" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                  <div class="modal-content">
+                                    <div class="modal-header">
+                                      <h5 class="modal-title" id="delete_record_label">Deletion of Records</h5>
+                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    </div>
+                                    <div class="card">
+                                      <div class="card-body">
+                                        <div class="modal-body">
+                                          <div class="form-group">
+                                            <label for="remarks">Remarks</label>
+                                            <input type="text" name="remarks" id="remarks" class="form-control" aria-describedby="remarksHelp" required />
+                                            <small id="remarksHelp" class="text-muted">Input your reason for deleting the records</small>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                      <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">CANCEL</button>
+                                      <button type="submit" name="btn_delete" value="del" class="btn btn-outline-danger">DELETE</button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              {% if pending %}
+                                {% if 'finance_admin' in groups or 'approvers' in groups or 'processor' in groups %}
+                                  <div class="btn-group mb-3 mr-3 float-left" role="group" aria-label="approvals">
+                                    <button style="display:none;" type="submit" name="btn_approval" value="approve" class="btn btn-secondary">Approve</button>
+                                    <button style="display:none;" type="submit" name="btn_approval" value="reject" class="btn btn-secondary">Reject</button>
+                                    <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#delete_record">Delete</button>
+                                  </div>
+                                {% endif %}
+                                <table id="tbl-pending" class="display nowrap compact dt-responsive table-striped w-100 dt-tbl">
+                                  <thead>
+                                    <tr>
+                                      {% if 'finance_admin' in groups or 'approvers' in groups or 'processor' in groups %}
+                                        <th></th>
+                                        <th>
+                                          <input type="checkbox" name="checkbox" id="checkAllNotApproved" value="bulk" />
+                                        </th>
+                                      {% endif %}
+                                      {% for key in pending|first %}
+                                        {% if '_id' not in key %}
+                                          <th>{{ key|upper }}</th>
+                                        {% endif %}
+                                      {% endfor %}
+                                    </tr>
+                                  </thead>
+                                  {% if pending %}
+                                    <tbody>
+                                      {% for row in pending %}
+                                        {% if row.approved == 'pending' %}
+                                          <tr>
+                                            <!-- <td></td> -->
+                                            {% for key, value in row.items %}
+                                              {% if forloop.first %}
+                                                {% if 'finance_admin' in groups or 'approvers' in groups or 'processor' in groups %}
+                                                  <td></td>
+                                                  <td>
+                                                    <input type="checkbox" name="report_id" class="checkOneNotApproved" value="{{ value }}" />
+                                                  </td>
+                                                {% endif %}
+                                              {% endif %}
+                                              {% if '_id' not in key %}
+                                                <td>{{ value }}</td>
+                                              {% endif %}
+                                            {% endfor %}
+                                          </tr>
+                                        {% endif %}
+                                      {% endfor %}
+                                    </tbody>
+                                  {% endif %}
+                                </table>
+                              {% else %}
+                                <table id="tbl-pending" class="display nowrap compact dt-responsive table-striped w-100 dt-tbl">
+                                  <thead>
+                                    <tr>
+                                      <td>--</td>
+                                    </tr>
+                                  </thead>
+                                  <tbody></tbody>
+                                </table>
+                              {% endif %}
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="tab-pane fade" id="not-approved" role="tabpanel" aria-labelledby="not-approved-tab">
+                    <div class="card">
+                      <div class="card-body">
+                        <div class="row">
+                          <div class="col-12">
+                            <h4 class="card-title pb-2 w-100 font-weight-bold" id="report-name">{{ collection|upper }}</h4>
+                            <form action="/bank-recon-records/{{ collection|slugify }}" method="post">
+                              {% csrf_token %}
+                              <input type="hidden" name="collection" value="{{ collection }}" />
+                              {% if rejected %}
+                                {% if 'finance_admin' in groups %}
+                                  <div class="btn-group mb-3 mr-3 float-left" role="group" aria-label="approvals" style="display:none;">
+                                    <button type="submit" name="btn_approval" value="pending" class="btn btn-secondary">For Approval</button>
+                                    <button type="submit" name="btn_approval" value="approve" class="btn btn-secondary">Approve</button>
+                                    <button type="submit" name="btn_delete" value="del" class="btn btn-secondary">Delete</button>
+                                  </div>
+                                {% endif %}
+                              {% endif %}
+                              {% if rejected %}
+                                <table id="tbl-rejected" class="display nowrap compact dt-responsive table-striped w-100 dt-tbl">
+                                  <thead>
+                                    <tr>
+                                      <th></th>
+                                      {% if 'finance_admin' in groups %}
+                                        <th>
+                                          <input type="checkbox" name="checkbox" id="checkAllNotApproved" value="bulk" />
+                                        </th>
+                                      {% endif %}
+                                      {% for key in rejected|first %}
+                                        {% if '_id' not in key %}
+                                          <th>{{ key|upper }}</th>
+                                        {% endif %}
+                                      {% endfor %}
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {% for row in rejected %}
+                                      <tr>
+                                        <td></td>
+                                        {% for key, value in row.items %}
+                                          {% if forloop.first %}
+                                            {% if 'finance_admin' in groups %}
+                                              <td>
+                                                <input type="checkbox" name="report_id" class="checkOneNotApproved" value="{{ value }}" />
+                                              </td>
+                                            {% endif %}
+                                          {% endif %}
+
+                                          {% if '_id' not in key %}
+                                            <td>{{ value }}</td>
+                                          {% endif %}
+                                        {% endfor %}
+                                      </tr>
+                                    {% endfor %}
+                                  </tbody>
+                                </table>
+                              {% else %}
+                                <table id="tbl-rejected" class="display nowrap compact dt-responsive table-striped w-100 dt-tbl">
+                                  <thead>
+                                    <tr>
+                                      <td>--</td>
+                                    </tr>
+                                  </thead>
+                                  <tbody></tbody>
+                                </table>
+                              {% endif %}
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- /.card -->
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- /. container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+{% endblock %}
+
+<!-- Specific Page JS goes HERE -->
+{% block javascripts %}
+  <!-- REQUIRED SCRIPTS -->
+  <!-- jQuery -->
+  <script src="/static/assets/plugins/jquery/jquery.min.js"></script>
+  <!-- Bootstrap -->
+  <script src="/static/assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <!-- bs-custom-file-input -->
+  <script src="/static/assets/plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
+  <!-- overlayScrollbars -->
+  <script src="/static/assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+
+  <script src="/static/assets/plugins/datatables/jquery.dataTables.min.js"></script>
+  <script src="/static/assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+  <script src="/static/assets/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+  <script src="/static/assets/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+  <script src="/static/assets/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+  <script src="/static/assets/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+  <script src="/static/assets/plugins/jszip/jszip.min.js"></script>
+  <script src="/static/assets/plugins/pdfmake/pdfmake.min.js"></script>
+  <script src="/static/assets/plugins/pdfmake/vfs_fonts.js"></script>
+  <script src="/static/assets/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+  <script src="/static/assets/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+  <script src="/static/assets/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+  <script src="/static/assets/plugins/datatables-searchbuilder/js/dataTables.searchBuilder.min.js"></script>
+  <script src="/static/assets/plugins/datatables-searchbuilder/js/searchBuilder.bootstrap4.min.js"></script>
+  <!-- AdminLTE App -->
+  <script src="/static/assets/js/adminlte.js"></script>
+
+  <!-- PAGE PLUGINS -->
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      $('#checkAllForApproval').click(function () {
+        if (this.checked) {
+          $('.checkOneForApproval').each(function () {
+            this.checked = true
+          })
+        } else {
+          $('.checkOneForApproval').each(function () {
+            this.checked = false
+          })
+        }
+      })
+    
+      $('#checkAllNotApproved').click(function () {
+        if (this.checked) {
+          $('.checkOneNotApproved').each(function () {
+            this.checked = true
+          })
+        } else {
+          $('.checkOneNotApproved').each(function () {
+            this.checked = false
+          })
+        }
+      })
+    
+      let reportConfigs = {
+        'Bank Statement': [2, 3, 6, 7, 8, 10, 11],
+        'General Ledger': [2]
+        // Add more reports as needed
+      }
+      let reportName = document.querySelector('#report-name').textContent
+      let config = reportConfigs[reportName]
+    
+      if (reportName === 'Bank Statement') {
+        $('.buttons-colvisGroup:eq(0)').trigger('click')
+      } else if (reportName === 'General Ledger') {
+        $('.buttons-colvisGroup:eq(1)').trigger('click')
+      }
+    
+      $('[data-toggle="tooltip"]').tooltip()
+      bsCustomFileInput.init()
+    
+      var tableApproved = $('table#tbl-approved').DataTable({
+        dom: 'Blfrtip',
+        stateSave: true,
+        lengthMenu: [
+          [10, 25, 50, 100, -1],
+          ['10 rows', '25 rows', '50 rows', '100 rows', 'Show all']
+        ],
+        lengthChange: false,
+        responsive: true,
+        language: {
+          buttons: {
+            colvisRestore: 'RESET COLUMN'
+          }
+        },
+        buttons: [
+          {
+            extend: 'excel',
+            filename: function () {
+              return document.querySelector('#file-export-name').textContent
+            },
+            exportOptions: {
+              columns: function (idx, data, node) {
+                if ($(node).hasClass('noVis')) {
+                  return false
+                }
+                return $('table#tbl-approved').DataTable().column(idx).visible()
+              }
+            }
+          },
+          {
+            extend: 'csv',
+            filename: function () {
+              return document.querySelector('#file-export-name').textContent
+            },
+            exportOptions: {
+              columns: function (idx, data, node) {
+                if ($(node).hasClass('noVis')) {
+                  return false
+                }
+                return $('table#tbl-approved').DataTable().column(idx).visible()
+              }
+            }
+          },
+          {
+            extend: 'colvis',
+            postfixButtons: ['colvisRestore']
+          },
+          {
+            extend: "searchBuilder",
+            columns: true,
+            layout: {
+              top1: "searchBuilder",
+            },
+          },
+          'pageLength'
+        ],
+        columnDefs: [
+          {
+            targets: '_all',
+            visible: true
+          }
+        ]
+      })
+      tableApproved.buttons().container().appendTo('#tbl-approved_wrapper .col-md-6:eq(0)')
+    
+      // Assuming your table has an id of 'tbl-pending'
+      var tablePending = $('#tbl-pending').DataTable({
+        dom: 'Blfrtip',
+        stateSave: true,
+        lengthMenu: [
+          [10, 25, 50, 100, -1],
+          ['10 rows', '25 rows', '50 rows', '100 rows', 'Show all']
+        ],
+        lengthChange: false,
+        responsive: true,
+        language: {
+          buttons: {
+            colvisRestore: 'RESET COLUMN'
+          }
+        },
+        buttons: [
+          {
+            extend: 'excel',
+            filename: function () {
+              return document.querySelector('#file-export-name').textContent
+            },
+            exportOptions: {
+              columns: function (idx, data, node) {
+                if ($(node).hasClass('noVis')) {
+                  return false
+                }
+                return $('#tbl-pending').DataTable().column(idx).visible()
+              }
+            }
+          },
+          {
+            extend: 'csv',
+            filename: function () {
+              return document.querySelector('#file-export-name').textContent
+            },
+            exportOptions: {
+              columns: function (idx, data, node) {
+                if ($(node).hasClass('noVis')) {
+                  return false
+                }
+                return $('#tbl-pending').DataTable().column(idx).visible()
+              }
+            }
+          },
+          {
+            extend: 'colvis',
+            postfixButtons: ['colvisRestore']
+          },
+          {
+            extend: 'colvisGroup',
+            text: 'Show Less',
+            hide: [2, 3, 6, 7, 8, 10, 11]
+          },
+          {
+            extend: 'colvisGroup',
+            text: 'Show all',
+            show: ':hidden'
+          },
+          {
+            extend: "searchBuilder",
+            columns: true,
+            layout: {
+              top1: "searchBuilder",
+            },
+          },
+          'pageLength'
+        ],
+        columnDefs: [
+          {
+            targets: '_all',
+            visible: true
+          },
+          //{ "searchable": false, "targets": [0,1] }
+        ],
+      })
+      tablePending.buttons().container().appendTo('#tbl-pending_wrapper .col-md-6:eq(0)')
+      
+      var tableRejected = $('table#tbl-rejected').DataTable({
+        dom: 'Blfrtip',
+        stateSave: true,
+        lengthMenu: [
+          [10, 25, 50, 100, -1],
+          ['10 rows', '25 rows', '50 rows', '100 rows', 'Show all']
+        ],
+        lengthChange: false,
+        responsive: true,
+        language: {
+          buttons: {
+            colvisRestore: 'RESET COLUMN'
+          }
+        },
+        buttons: [
+          {
+            extend: 'excel',
+            filename: function () {
+              return document.querySelector('#file-export-name').textContent
+            },
+            exportOptions: {
+              columns: function (idx, data, node) {
+                if ($(node).hasClass('noVis')) {
+                  return false
+                }
+                return $('table#tbl-rejected').DataTable().column(idx).visible()
+              }
+            }
+          },
+          {
+            extend: 'csv',
+            filename: function () {
+              return document.querySelector('#file-export-name').textContent
+            },
+            exportOptions: {
+              columns: function (idx, data, node) {
+                if ($(node).hasClass('noVis')) {
+                  return false
+                }
+                return $('table#tbl-rejected').DataTable().column(idx).visible()
+              }
+            }
+          },
+          {
+            extend: 'colvis',
+            postfixButtons: ['colvisRestore']
+          },
+          {
+            extend: "searchBuilder",
+            columns: true,
+            layout: {
+              top1: "searchBuilder",
+            },
+          },
+          'pageLength'
+        ],
+        columnDefs: [
+          {
+            targets: '_all',
+            visible: true
+          }
+        ]
+      })
+    
+      tableRejected.buttons().container().appendTo('#tbl-rejected_wrapper .col-md-6:eq(0)')
+    
+      $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+        $($.fn.dataTable.tables(true)).DataTable().columns.adjust().responsive.recalc()
+      })
+    })
+  </script>
+{% endblock %}

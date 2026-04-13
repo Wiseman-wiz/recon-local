@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="/static/assets/img/favicon.ico" type="image/x-icon">
+
+  <title>
+    Borland Development Corporation Systems | {% block title %}{% endblock %}
+  </title> 
+  <!-- pace-progress -->
+  <link rel="stylesheet" href="/static/assets/plugins/pace-progress/themes/black/pace-theme-flat-top.css">
+  {% block stylesheets %}{% endblock stylesheets %}
+  <link rel="stylesheet" href="/static/assets/plugins/codemirror/codemirror.css">
+  <link rel="stylesheet" href="/static/assets/plugins/codemirror/theme/monokai.css">
+  <link rel="stylesheet" href="/static/assets/css/custom.css">
+  <link rel="stylesheet" href="/static/assets/css/app/main.css">
+</head>
+<body id="top" class="hold-transition pace-success {% block body_class %}{% endblock body_class %}" {% block body_attrib %}{% endblock body_attrib %}>
+<div class="wrapper">
+    {% block preloader %}{% endblock preloader %}
+
+    {% include 'includes/navigation.html' %}
+
+    {% include 'includes/sidebar.html' %}
+
+    {% block content %}
+    {% endblock content %}
+    <a href="#top" id="go-top-btn" class="btn btn-success" role="button" aria-label="Scroll to top">
+      <i class="fas fa-chevron-up"></i>
+    </a>
+    
+    {% include 'includes/footer.html' %}
+
+    <!-- Control Sidebar -->
+    <!-- <aside class="control-sidebar control-sidebar-dark"> -->
+        <!-- Control sidebar content goes here -->
+    <!-- </aside> -->
+    <!-- /.control-sidebar -->
+
+</div>
+<!-- ./wrapper -->
+
+<!-- Specific Page JS goes HERE  -->
+<!-- pace-progress -->
+<script src="/static/assets/plugins/pace-progress/pace.min.js"></script>
+
+{% block javascripts %}{% endblock javascripts %}
+
+<script src="/static/assets/plugins/codemirror/codemirror.js"></script>
+<script src="/static/assets/plugins/codemirror/mode/python/python.js"></script>
+<script src="/static/assets/plugins/codemirror/keymap/sublime.js"></script>
+<script src="/static/assets/js/app/main.js"></script>
+</body>
+</html>

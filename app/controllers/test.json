@@ -1,0 +1,18 @@
+{'': '', 'trndate': datetime.datetime(2022,
+    1,
+    26,
+    0,
+    0), 'trnno': '324791', 'subacct': '1001-013', 'other_01': 'METROBANK CARD', 'other_03': '202201-001', 'dr_amt': 0.0, 'cr_amt': 40812.31, 'beg_date': datetime.datetime(2022,
+    1,
+    1,
+    0,
+    0), 'end_date': datetime.datetime(2022,
+    1,
+    31,
+    0,
+    0), 'ref_2': 'D-01|', 'cheque': '1/26/2022', 'date_modified': datetime.datetime(2022,
+    9,
+    20,
+    0,
+    0), 'approved': 'pending'
+}

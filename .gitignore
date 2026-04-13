@@ -13,7 +13,7 @@ __pycache__/
 
 # configs
 .env
-.ini
+*.ini
 
 # venv
 env
@@ -38,3 +38,16 @@ id_rsa.pub
 db_dump/*
 
 *.code-workspace
+
+# database backups
+*.sqlite3.bak
+
+# lint reports
+flake8_output/
+flake8_reports/
+
+# IDE debug config
+launch.json
+
+# load test with internal URLs
+test.py

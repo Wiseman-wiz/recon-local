@@ -1,0 +1,18 @@
+{% if min_max_date_range %}
+    <div class="row">
+        <div class="column" style="padding:20px">
+            <h3>Min Max Date Range</h3>
+        </div>
+    {% for data_name,data in min_max_date_range.items%}
+        <div class="column" style="padding:20px">
+            {{data_name}}
+            {% for key, value in data.items %}
+                <div class="row">
+                    {{key}}: {{value}}
+                </div>
+            {% endfor %}
+        </div>
+        {% endfor %}
+    </div>
+{% endif %}
+

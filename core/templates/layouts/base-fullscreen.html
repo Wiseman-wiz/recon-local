@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="/static/assets/img/logo-mini.svg" type="image/x-icon">
+
+  <title>
+    Borland Development Corporation Systems
+  </title> 
+
+  <!-- Specific Page CSS goes HERE  -->  
+  {% block stylesheets %}{% endblock stylesheets %}
+
+</head>
+<body class="hold-transition {% block body_class %}{% endblock body_class %}" {% block body_attrib %}{% endblock body_attrib %}>
+
+  {% block content %}{% endblock content %}
+
+  <!-- Specific Page JS goes HERE  -->
+  {% block javascripts %}{% endblock javascripts %}
+
+</body>
+</html>

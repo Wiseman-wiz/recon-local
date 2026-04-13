@@ -1,0 +1,192 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Bank Recon {% endblock %} 
+
+<!-- Element injected in the BODY element -->
+{% block body_class %} sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed {% endblock body_class %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+
+<style>
+  .modal {
+    display: none; /* Hide the modal by default */
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5); /* Add a semi-transparent background */
+  }
+
+  .modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* Adjust the positioning of the modal */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 600px;
+  }
+
+  .nested-table {
+    margin-top: 10px;
+    border-collapse: collapse;
+  }
+
+  .nested-table td {
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+  }
+</style>
+
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="/static/assets/plugins/fontawesome-free/css/all.min.css">
+  <!-- overlayScrollbars -->
+  <link rel="stylesheet" href="/static/assets/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="/static/assets/css/adminlte.min.css">
+  
+{% endblock stylesheets %}
+
+{% block content %}
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">AUDIT TRAILS</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'bank-recon' %}">Bank Recon</a></li>
+                <li class="breadcrumb-item active">AUDIT TRAILS</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row show-hide-list" id="rendered-list">
+            {% include 'includes/messages.html' %}
+            <div class="col-6 mb-6">
+            
+            {% if execution %}
+            <table class="main-tbl display nowrap compact dt-responsive table-striped table-hover table-bordered w-100">
+              <thead>
+                <th>id</th>
+                <th>user</th>
+                <th>action</th>
+                <th>action_type</th>
+                <th>actions</th>
+                <th>company</th>
+                <th>time</th>
+              </thead>
+              <tbody>
+                {% for exe in execution %}
+                    <tr>
+                      <td>{{ exe.id }}</td>
+                      <td>{{ exe.user }}</td>
+                      <td>{{ exe.action }}</td>
+                      <td>{{ exe.action_type }}</td>
+                      <td>
+                        <div class="container">
+                          <button class="button" onclick="openModal('{{ exe.actions[1:-1] |escapejs }}')">Open Modal</button>
+                          <div class="modal">
+                            <div class="modal-content"></div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>{{ exe.company }}</td>
+                      <td>{{ exe.time }}</td>
+                    </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            {% else %}
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body mx-auto">
+                        <h5 class="card-title">No Records Available</h5>
+                    </div>
+                </div>
+            </div>
+            {% endif %}   
+        </div>
+      </div><!--/. container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+
+  <!-- REQUIRED SCRIPTS -->
+  <!-- jQuery -->
+  <script src="/static/assets/plugins/jquery/jquery.min.js"></script>
+  <!-- Bootstrap -->
+  <script src="/static/assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <!-- bs-custom-file-input -->
+  <script src="/static/assets/plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
+  <!-- overlayScrollbars -->
+  <script src="/static/assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+  <!-- AdminLTE App -->
+  <script src="/static/assets/js/adminlte.js"></script>
+
+  <!-- PAGE PLUGINS -->
+  
+  <!-- PAGE SCRIPTS -->
+  <script>
+    $(function () {
+        bsCustomFileInput.init();
+    })
+
+    function openModal(content) {
+      var modal = document.querySelector('.modal');
+      var modalContent = modal.querySelector('.modal-content');
+      modalContent.innerHTML = generateTable(JSON.parse(content));
+      modal.style.display = 'block';
+    }
+
+    function generateTable(data) {
+      var table = '<table class="nested-table">';
+      for (var key in data) {
+        if (data.hasOwnProperty(key)) {
+          var value = data[key];
+          table += '<tr><td>' + key + '</td><td>';
+          if (typeof value === 'object' && value !== null) {
+            table += generateTable(value);
+          } else {
+            table += value;
+          }
+          table += '</td></tr>';
+        }
+      }
+      table += '</table>';
+      return table;
+    }
+
+    window.onclick = function(event) {
+      var modal = document.querySelector('.modal');
+      if (event.target === modal) {
+        modal.style.display = 'none';
+      }
+    };
+  </script>
+
+{% endblock javascripts %}

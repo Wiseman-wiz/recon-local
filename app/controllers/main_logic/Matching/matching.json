@@ -1,0 +1,45 @@
+{
+    "connection": {
+        "BDC_bank_recon": [
+            "bank_statement",
+            "general_ledger"
+        ]
+    },
+    "db": "BDC_bank_recon",
+    "criteria": {
+        "1": {
+            "bank_statement": "transaction_reference",
+            "general_ledger": "other_03"
+        },
+        "2": {
+            "bank_statement": "transaction_date",
+            "general_ledger": "trndate"
+        }
+    },
+    "criteria_pattern": [
+        {
+            "or": [
+                1,
+                2
+            ]
+        },
+        {
+            "and": [
+                1,
+                2
+            ]
+        }
+    ],
+    "bank_acct":"447-7-44751351-6",
+    "single_criteria":[
+        {
+            "bank_statement": "transaction_reference",
+            "general_ledger": "other_03"
+        },
+        {
+            "bank_statement": "transaction_date",
+            "general_ledger": "trndate"
+        }
+    ]
+
+}

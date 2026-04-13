@@ -1,0 +1,381 @@
+{% extends "layouts/base.html" %}
+
+{% load humanize %}
+
+{% block title %} Accounts {% endblock %} 
+
+<!-- Element injected in the BODY element -->
+{% block body_class %} sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed {% endblock body_class %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="/static/assets/plugins/fontawesome-free/css/all.min.css">
+  <!-- overlayScrollbars -->
+  <link rel="stylesheet" href="/static/assets/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+  
+  <link rel="stylesheet" href="/static/assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+  <link rel="stylesheet" href="/static/assets/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+  <link rel="stylesheet" href="/static/assets/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+  <link rel="stylesheet" href="/static/assets/plugins/datatables-searchbuilder/css/searchBuilder.bootstrap4.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="/static/assets/css/adminlte.min.css">
+
+{% endblock stylesheets %}
+
+{% block content %}
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">Accounts</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+              <li class="breadcrumb-item"><a href="{% url 'bank-recon' %}">Bank Recon</a></li>
+              <li class="breadcrumb-item active" id="bank-accounts">Accounts</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+            {% include 'includes/messages.html' %}
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        {% if 'viewer' not in groups %}
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <button type="button" class="btn btn-outline-success" data-toggle="modal" data-target="#modalBankAccounts">
+                                  Add Bank Account
+                                </button>
+                                
+                                <div class="modal fade" id="modalBankAccounts" tabindex="-1" role="dialog" aria-labelledby="bankaccounts" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <form action="{% url 'bank-recon-bank-accounts-main' %}" method="post">
+                                                {% csrf_token %}
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Create New Bank Account</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="container-fluid">
+                                                        <div class="row">
+                                                            <div class="col-12">
+                                                                <div class="form-group">
+                                                                    <label for="">Subaccount</label>
+                                                                    {{ form_1.subaccount }}
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label for="">Account Number</label>
+                                                                    {{ form_1.account_number }}
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label for="">Account Holder</label>
+                                                                    {{ form_1.account_holder }}
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label for="">Bank Name</label>
+                                                                    {{ form_1.bank_name }}
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label for="">Bank Branch</label>
+                                                                    {{ form_1.bank_branch }}
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label for="">Account Type 1</label>
+                                                                    {{ form_1.account_type_1 }}
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label for="">Account Type 2</label>
+                                                                    {{ form_1.account_type_2 }}
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label for="">Beginning Balance</label>
+                                                                    {{ form_1.beginning_balance }}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn-outline-success" name="btn_add">Add</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        <div class="row">
+                            <div class="col-12">
+                                <table id="main" class="display nowrap compact dt-responsive table-striped w-100">
+                                    <thead>
+                                        {% if account %}
+                                        <tr>
+                                            {% if 'viewer' not in groups %}
+                                            <th>ACTION</th>
+                                            {% endif %}
+                                            {% for key in account|first %}
+                                                {% if key != "id" %}
+                                                <th>{{key|upper}}</th>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </tr>
+                                        {% endif %}
+                                    </thead>
+                                    <tbody>
+                                        {% if account %}
+                                            {% for row in account %}
+                                                <tr>
+                                                    {% if 'viewer' not in groups %}
+                                                    <td>
+                                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#ba-{{row.id}}">
+                                                            <i class="fas fa-edit"></i>
+                                                        </button>
+
+                                                        <div class="modal fade" id="ba-{{row.id}}" tabindex="-1" aria-labelledby="ba-{{row.id}}Label" aria-hidden="true">
+                                                            <div class="modal-dialog modal-dialog-centered">
+                                                                <div class="modal-content">
+                                                                    <form action="{% url 'bank-recon-bank-accounts-main' %}" method="POST">
+                                                                        {% csrf_token %}
+                                                                        <input type="hidden" name="id" value="{{row.id}}">
+                                                                        <div class="modal-header">
+                                                                            <h5 class="modal-title" id="ba-{{row.id}}Label">{{row.id}}</h5>
+                                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                                <span aria-hidden="true">&times;</span>
+                                                                            </button>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            <div class="row">
+                                                                                <div class="col-12">
+                                                                                    <div class="form-group">
+                                                                                        <label for="">Subaccount</label>
+                                                                                        <input class="form-control" type="text" name="subaccount" value="{{ row.subaccount }}">
+                                                                                    </div>
+                                                                                    <div class="form-group">
+                                                                                        <label for="">Account Number</label>
+                                                                                        <input class="form-control" type="text" name="account_number" value="{{ row.account_number }}">
+                                                                                    </div>
+                                                                                    <div class="form-group">
+                                                                                        <label for="">Account Holder</label>
+                                                                                        <input class="form-control" type="text" name="account_holder" value="{{ row.account_holder }}">
+                                                                                    </div>
+                                                                                    <div class="form-group">
+                                                                                        <label for="">Bank Name</label>
+                                                                                        <input class="form-control" type="text" name="bank_name" value="{{ row.bank_name }}">
+                                                                                    </div>
+                                                                                    <div class="form-group">
+                                                                                        <label for="">Bank Branch</label>
+                                                                                        <input class="form-control" type="text" name="bank_branch" value="{{ row.bank_branch }}">
+                                                                                    </div>
+                                                                                    <div class="form-group">
+                                                                                        <label for="">Account Type 1</label>
+                                                                                        <input class="form-control" type="text" name="account_type_1" value="{{ row.account_type_1 }}">
+                                                                                    </div>
+                                                                                    <div class="form-group">
+                                                                                        <label for="">Account Type 2</label>
+                                                                                        <input class="form-control" type="text" name="account_type_2" value="{{ row.account_type_2 }}">
+                                                                                    </div>
+                                                                                    <div class="form-group">
+                                                                                        <label for="">Beginning Balance</label>
+                                                                                        <input class="form-control" type="number" name="beginning_balance" onkeydow="event.keyCode !== 69 && event.keyCode !== 187" step=".01" value="{{ row.beginning_balance }}">
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="modal-footer">
+                                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                                            <button type="submit" class="btn btn-primary" name="btn_update">Update</button>
+                                                                        </div>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        {% if 'finance_admin' in groups %}
+                                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#ba-{{row.id}}-del">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                        
+                                                        <div class="modal fade" id="ba-{{row.id}}-del" tabindex="-1" aria-labelledby="ba-{{row.id}}-del" aria-hidden="true">
+                                                            <div class="modal-dialog">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                    <h5 class="modal-title" id="ba-{{row.id}}-del">Delete a Bank Account</h5>
+                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                        <span aria-hidden="true">&times;</span>
+                                                                    </button>
+                                                                    </div>
+                                                                    <form action="{% url 'bank-recon-bank-accounts-main' %}" method="post">
+                                                                        {% csrf_token %}
+                                                                        <div class="modal-body">
+                                                                            <div class="form-group">
+                                                                                <label for="remarks">Remarks</label>
+                                                                                <input type="text" name="remarks" id="remarks" class="form-control" aria-describedby="remarksHelp" required>
+                                                                                <small id="remarksHelp" class="text-muted">Input your reason for deleting the bank account</small>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="modal-footer">
+                                                                            <input type="hidden" name="id" value="{{row.id}}">
+                                                                            <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">CANCEL</button>
+                                                                            <button type="submit" class="btn btn-outline-danger" name="btn_del">DELETE</button>
+                                                                        </div>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        {% endif %}
+                                                    </td>
+                                                    {% endif %}
+                                                    {% for key,value in row.items %}
+                                                        {% if "balance" in key %}
+                                                        <td>{{value|floatformat:2|intcomma}}</td>
+                                                        {% elif key != "id" %}
+                                                        <td>{{value}}</td>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </tr>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tbody>
+                                </table>
+                                {% if not account %}
+                                <div class="col-12">
+                                    <div class="card">
+                                        <div class="card-body mx-auto">
+                                            <h5 class="card-title">No Accounts Available</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div><!--/. container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+  <!-- REQUIRED SCRIPTS -->
+  <!-- jQuery -->
+  <script src="/static/assets/plugins/jquery/jquery.min.js"></script>
+  <!-- Bootstrap -->
+  <script src="/static/assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <!-- overlayScrollbars -->
+  <script src="/static/assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+
+  <script src="/static/assets/plugins/datatables/jquery.dataTables.min.js"></script>
+  <script src="/static/assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+  <script src="/static/assets/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+  <script src="/static/assets/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+  <script src="/static/assets/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+  <script src="/static/assets/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+  <script src="/static/assets/plugins/jszip/jszip.min.js"></script>
+  <script src="/static/assets/plugins/pdfmake/pdfmake.min.js"></script>
+  <script src="/static/assets/plugins/pdfmake/vfs_fonts.js"></script>
+  <script src="/static/assets/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+  <script src="/static/assets/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+  <script src="/static/assets/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+  <script src="/static/assets/plugins/datatables-searchbuilder/js/dataTables.searchBuilder.min.js"></script>
+  <script src="/static/assets/plugins/datatables-searchbuilder/js/searchBuilder.bootstrap4.min.js"></script>
+  <!-- AdminLTE App -->
+  <script src="/static/assets/js/adminlte.js"></script>
+
+  <!-- PAGE PLUGINS -->
+
+  <!-- PAGE SCRIPTS -->
+  <script>
+    $(document).ready( function () {
+      var table = $('table#main').DataTable({
+        dom: 'Blfrtip',
+        stateSave: true,
+        lengthMenu: [
+            [ 10, 25, 50, 100, -1 ],
+            [ '10 rows', '25 rows', '50 rows', '100 rows', 'Show all' ]
+        ],
+        lengthChange: false,
+        responsive: true,
+        language: {
+            buttons: {
+                colvisRestore: "RESET COLUMN"
+            }
+        },
+        buttons: [ 
+            {
+                extend: 'excel',
+                filename: function () { return document.querySelector("#bank-accounts").textContent },
+                exportOptions: { 
+                    columns: function(idx, data, node) {
+                        if ($(node).hasClass('noVis')) {
+                            return false;
+                        }
+                        return $('table#main').DataTable().column(idx).visible();
+                    } 
+                }
+            },
+            {
+                extend: 'csv',
+                filename: function () { return document.querySelector("#bank-accounts").textContent },
+                exportOptions: { 
+                    columns: function(idx, data, node) {
+                        if ($(node).hasClass('noVis')) {
+                            return false;
+                        }
+                        return $('table#main').DataTable().column(idx).visible();
+                    }
+                }
+            },
+            {
+                extend: 'colvis',
+                postfixButtons: [ 'colvisRestore' ]
+            }, 
+            {
+                extend: "searchBuilder",
+                columns: true,
+                layout: {
+                  top1: "searchBuilder",
+                },
+            },
+            'pageLength',
+        ],
+        columnDefs: [
+            {
+                targets: '_all',
+                visible: true
+            }
+        ]
+    });
+    table.buttons().container()
+    .appendTo( '#main_wrapper .col-md-6:eq(0)' );
+  } );
+</script>
+
+{% endblock javascripts %}

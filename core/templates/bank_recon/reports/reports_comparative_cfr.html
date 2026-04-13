@@ -1,0 +1,380 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Dashboard {% endblock %} 
+
+<!-- Element injected in the BODY element -->
+{% block body_class %} sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed {% endblock body_class %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="/static/assets/plugins/fontawesome-free/css/all.min.css">
+  <!-- overlayScrollbars -->
+  <link rel="stylesheet" href="/static/assets/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+  <!-- Select2 -->
+  <link rel="stylesheet" href="/static/assets/plugins/select2/css/select2.min.css">
+  <link rel="stylesheet" href="/static/assets/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+  
+  <link rel="stylesheet" href="/static/assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+  <link rel="stylesheet" href="/static/assets/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+  <link rel="stylesheet" href="/static/assets/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="/static/assets/css/adminlte.min.css">
+
+{% endblock stylesheets %}
+
+{% block content %}
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">Bank Recon Reports</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="{% url 'bank-recon' %}">Bank Recon</a></li>
+              <li class="breadcrumb-item"><a href="{% url 'bank-recon-reports-comparative-cfr-main' %}">Comparative CFR</a></li>
+              <li class="breadcrumb-item active">{{ cfr.report_name|upper }}</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+            {% include 'includes/messages.html' %}
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="w-100 pb-2" id="ccfr">Comparative Cash Flow Report</h4>
+                        <div class="row">
+                            <div class="col-6">
+                              <ul class="list-group list-group-flush">
+                                <li class="list-group-item">REPORT NAME: <span class="ml-5 font-weight-bold" id="report-name">{{ cfr.report_name|upper }}</span></li>
+                                <li class="list-group-item">DATE PERIOD: <span class="ml-5 pl-2 font-weight-bold">{{ cfr.period.from }} - {{ cfr.period.to }}</span></li>
+                                <li class="list-group-item">TARGET RECORD: <span class="ml-4 pl-2 font-weight-bold">{{ cfr.target_records|upper }}</span></li>
+                              </ul>
+                            </div>
+                            <div class="col-6">
+                              <button class="btn btn-secondary" type="button" data-toggle="collapse" data-target="#viewCFR" aria-expanded="false" aria-controls="viewCFR">
+                                View Cash Flow Report
+                              </button>
+                              <div class="collapse" id="viewCFR">
+                                <div class="card card-body">
+                                  {% for data in month_year_period %}
+                                    <a class="btn btn-outline-secondary font-weight-bold" href="/bank-recon-reports-monthly-cfr/{{ data }}/{{ report }}">{{ data }}</a>
+                                  {% endfor %}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row">  
+                            <div class="col-12">
+                              <table class="display nowrap compact dt-responsive table-striped w-100" id="main">
+                                <thead>
+                                  <tr>
+                                    <th scope="col">REF 1</th>
+                                    <th scope="col">REF 2</th>
+                                    <th scope="col">ITEM</th>
+                                    <th scope="col">AMOUNT</th>
+                                    <th scope="col">MONTH</th>
+                                    <th scope="col">YEAR</th>
+                                    {% comment %} {% for data in month_year_period %}
+                                    <th scope="col">{{ data }}</th>
+                                    {% endfor %}  {% endcomment %}
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {% for data in ccfr %}
+                                  <tr>
+                                    <td>{{ data.ref_code_1 }}</td>
+                                    <td>{{ data.ref_code_2 }}</td>
+                                    <td>{{ data.item.0 }}</td>
+                                    <td>{{ data.total_amt }}</td>
+                                    <td>{{ data.month }}</td>
+                                    <td>{{ data.year }}</td>
+                                  </tr>
+                                  {% endfor %}
+                                </tbody>
+                              </table>
+                            </div>
+                            <div class="col-12">
+                              <h5 id="ccfr_monthly">Total amount per month</h5>
+                              <table class="display nowrap compact dt-responsive table-striped w-100" id="sub-main">
+                                <thead>
+                                  <tr>
+                                    {% for data in month_year_period %}
+                                    <th scope="col"><a class="btn btn-secondary font-weight-bold" href="/bank-recon-reports-monthly-cfr/{{ data }}/{{ report }}">{{ data }}</a></th>
+                                    {% endfor %}
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr>
+                                    {% for data in ccfr_total %}
+                                    <td>{{ data.net_total_amt }}</td>
+                                    {% endfor %}
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div><!--/. container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+  <!-- REQUIRED SCRIPTS -->
+  <!-- jQuery -->
+  <script src="/static/assets/plugins/jquery/jquery.min.js"></script>
+  <!-- Bootstrap -->
+  <script src="/static/assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <!-- overlayScrollbars -->
+  <script src="/static/assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+
+  <script src="/static/assets/plugins/datatables/jquery.dataTables.min.js"></script>
+  <script src="/static/assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+  <script src="/static/assets/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+  <script src="/static/assets/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+  <script src="/static/assets/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+  <script src="/static/assets/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+  <script src="/static/assets/plugins/jszip/jszip.min.js"></script>
+  <script src="/static/assets/plugins/pdfmake/pdfmake.min.js"></script>
+  <script src="/static/assets/plugins/pdfmake/vfs_fonts.js"></script>
+  <script src="/static/assets/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+  <script src="/static/assets/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+  <script src="/static/assets/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+  <!-- AdminLTE App -->
+  <script src="/static/assets/js/adminlte.js"></script>
+
+  <!-- PAGE PLUGINS -->
+  <!-- PAGE SCRIPTS -->
+  <!-- <script src="/static/assets/js/app/reports.js"></script> -->
+  <!-- <script src="/static/assets/js/app/search.js"></script> -->
+  <script type="text/javascript">
+    $(document).ready(function() {
+        $('#checkAllForApproval').click(function() {
+            if (this.checked) {
+                $('.checkOneForApproval').each(function(){
+                    this.checked = true;
+                });
+            } else {
+                $('.checkOneForApproval').each(function(){
+                    this.checked = false;
+                });
+            }
+        });
+
+        $('#checkAllNotApproved').click(function() {
+            if (this.checked) {
+                $('.checkOneNotApproved').each(function(){
+                    this.checked = true;
+                });
+            } else {
+                $('.checkOneNotApproved').each(function(){
+                    this.checked = false;
+                });
+            }
+        });
+
+        $('[data-toggle="tooltip"]').tooltip();
+
+        $('#main thead tr').clone(true).addClass('main-filters').appendTo( '#main thead' );
+        var table = $('table#main').DataTable({
+            dom: 'Blfrtip',
+            lengthMenu: [
+                [ 10, 25, 50, 100, -1 ],
+                [ '10 rows', '25 rows', '50 rows', '100 rows', 'Show all' ]
+            ],
+            lengthChange: false,
+            responsive: true,
+            language: {
+                buttons: {
+                    colvisRestore: "RESET COLUMN"
+                }
+            },
+            orderCellsTop: true,
+            initComplete: function() {
+              var api = this.api();
+              // For each column
+              api.columns().eq(0).each(function(colIdx) {
+                  // Set the header cell to contain the input element
+                  var cell = $('.main-filters th').eq($(api.column(colIdx).header()).index());
+                  var title = $(cell).text();
+                  $(cell).html( '<input class="form-control form-control-sm" type="text" placeholder="'+title+'" />' );
+                  // On every keypress in this input
+                  $('input', $('.main-filters th').eq($(api.column(colIdx).header()).index()) )
+                      .off('keyup change')
+                      .on('keyup change', function (e) {
+                          e.stopPropagation();
+                          // Get the search value
+                          $(this).attr('title', $(this).val());
+                          var regexr = '({search})'; //$(this).parents('th').find('select').val();
+                          var cursorPosition = this.selectionStart;
+                          // Search the column for that value
+                          api
+                              .column(colIdx)
+                              .search((this.value != "") ? regexr.replace('{search}', '((('+this.value+')))') : "", this.value != "", this.value == "")
+                              .draw();
+                          $(this).focus()[0].setSelectionRange(cursorPosition, cursorPosition);
+                      });
+                });
+            },
+            buttons: [ 
+                {
+                    extend: 'excel',
+                    filename: 'comparative_cfr',
+                    exportOptions: { 
+                        //columns: ':visible:not(:first-child)'
+                        columns: function(idx, data, node) {
+                            if ($(node).hasClass('noVis')) {
+                                return false;
+                            }
+                            return $('table#main').DataTable().column(idx).visible();
+                        } 
+                    }
+                },
+                {
+                    extend: 'csv',
+                    filename: 'comparative_cfr',
+                    exportOptions: { 
+                        columns: function(idx, data, node) {
+                            if ($(node).hasClass('noVis')) {
+                                return false;
+                            }
+                            return $('table#main').DataTable().column(idx).visible();
+                        }
+                    }
+                },
+                {
+                    extend: 'colvis',
+                    postfixButtons: [ 'colvisRestore' ]
+                }, 
+                'pageLength',
+            ],
+            columnDefs: [
+                {
+                    targets: '_all',
+                    visible: true
+                }
+            ]
+        });
+        table.buttons().container()
+        .appendTo( '#main_wrapper .col-md-6:eq(0)' );
+
+        $('#sub-main thead tr').clone(true).addClass('sub-filters').appendTo( '#sub-main thead' );
+        var subtable = $('table#sub-main').DataTable({
+            dom: 'Blfrtip',
+            lengthMenu: [
+                [ 10, 25, 50, 100, -1 ],
+                [ '10 rows', '25 rows', '50 rows', '100 rows', 'Show all' ]
+            ],
+            lengthChange: false,
+            responsive: true,
+            language: {
+                buttons: {
+                    colvisRestore: "RESET COLUMN"
+                }
+            },
+            orderCellsTop: true,
+            initComplete: function() {
+              var api = this.api();
+              // For each column
+              api.columns().eq(0).each(function(colIdx) {
+                  // Set the header cell to contain the input element
+                  var cell = $('.sub-filters th').eq($(api.column(colIdx).header()).index());
+                  var title = $(cell).text();
+                  $(cell).html( '<input class="form-control form-control-sm" type="text" placeholder="'+title+'" />' );
+                  // On every keypress in this input
+                  $('input', $('.sub-filters th').eq($(api.column(colIdx).header()).index()) )
+                      .off('keyup change')
+                      .on('keyup change', function (e) {
+                          e.stopPropagation();
+                          // Get the search value
+                          $(this).attr('title', $(this).val());
+                          var regexr = '({search})'; //$(this).parents('th').find('select').val();
+                          var cursorPosition = this.selectionStart;
+                          // Search the column for that value
+                          api
+                              .column(colIdx)
+                              .search((this.value != "") ? regexr.replace('{search}', '((('+this.value+')))') : "", this.value != "", this.value == "")
+                              .draw();
+                          $(this).focus()[0].setSelectionRange(cursorPosition, cursorPosition);
+                      });
+                });
+            },
+            buttons: [ 
+                {
+                    extend: 'excel',
+                    filename: 'cfr_monthly',
+                    exportOptions: { 
+                        //columns: ':visible:not(:first-child)'
+                        columns: function(idx, data, node) {
+                            if ($(node).hasClass('noVis')) {
+                                return false;
+                            }
+                            return $('table#sub-main').DataTable().column(idx).visible();
+                        } 
+                    }
+                },
+                {
+                    extend: 'csv',
+                    filename: 'cfr_monthly',
+                    exportOptions: { 
+                        columns: function(idx, data, node) {
+                            if ($(node).hasClass('noVis')) {
+                                return false;
+                            }
+                            return $('table#sub-main').DataTable().column(idx).visible();
+                        }
+                    }
+                },
+                {
+                    extend: 'colvis',
+                    postfixButtons: [ 'colvisRestore' ]
+                }, 
+                'pageLength',
+            ],
+            columnDefs: [
+                {
+                    targets: '_all',
+                    visible: true
+                }
+            ]
+        });
+        subtable.buttons().container()
+        .appendTo( '#sub-main_wrapper .col-md-6:eq(0)' );
+
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function(e){
+            $($.fn.dataTable.tables(true)).DataTable()
+               .columns.adjust()
+               .responsive.recalc();
+         });  
+    } );
+
+    
+  </script>
+
+  
+
+{% endblock javascripts %}

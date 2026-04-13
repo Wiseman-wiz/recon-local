@@ -1,0 +1,308 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Dashboard {% endblock %} 
+
+<!-- Element injected in the BODY element -->
+{% block body_class %} sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed {% endblock body_class %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="/static/assets/plugins/fontawesome-free/css/all.min.css">
+  <!-- overlayScrollbars -->
+  <link rel="stylesheet" href="/static/assets/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="/static/assets/css/adminlte.min.css">
+
+{% endblock stylesheets %}
+
+{% block content %}
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">Dashboard</h1>
+          </div>
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <!-- Info boxes -->
+        <!--<div class="row">
+          <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box">
+              <span class="info-box-icon bg-success elevation-1"><i class="fas fa-arrow-alt-circle-up"></i></span>
+
+              <div class="info-box-content">
+                <a type="button" href="{% url 'bank-recon' %}" style="width:100%" class="btn {{button_success}} text-bold">BANK RECON</a>
+                <span class="info-box-text">FINANCE MODULE</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box">
+              <span class="info-box-icon bg-success elevation-1"><i class="fas fa-arrow-alt-circle-up"></i></span>
+
+              <div class="info-box-content">
+                <a type="button" href="https://dms.borland.com.ph" style="width:100%" class="btn {{button_success}} text-bold" target="_blank">DMS</a>
+                <span class="info-box-text">GENERAL MODULE</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="clearfix hidden-md-up"></div>
+
+          <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box">
+              <span class="info-box-icon bg-success elevation-1"><i class="fas fa-arrow-alt-circle-up"></i></span>
+
+              <div class="info-box-content">
+                <a type="button" href="{% url 'home2' %}" style="width:100%" class="btn {{button_success}} text-bold" target="_blank">TEXT BLAST</a>
+                <span class="info-box-text">FINANCE MODULE</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box">
+              <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-arrow-alt-circle-down"></i></span>
+
+              <div class="info-box-content">
+                <a type="button" href="#" style="width:100%" class="btn {{button_danger}} text-bold">ESB</a>
+                <span class="info-box-text">FINANCE MODULE</span>
+              </div>
+            </div>
+          </div>
+        </div>
+       /.row -->
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header border-0 pb-0 d-flex justify-content-between">
+                <h3 class="card-title text-bold">Testing Features:</h3>
+              </div>
+              <div class="card-body py-0">
+                <div class="row">
+                  
+                  {% comment %} {% for test_case, result in testing.items %}
+                  <div class="col-12">
+                    <div class="info-box mb-0">
+                      <span class="info-box-icon bg-primary elevation-1"><i class="fas fa-file-alt"></i></span>
+                      <div class="info-box-content">
+                        <div class="row">
+                          <div class="col-lg-9 col-md-8 col-sm-6 col-12">
+                            <h5 class="info-box-text text-wrap mb-0">{{test_case}}</h5>
+                            <span class="info-box-text text-wrap">{{result}}</span>
+                          </div>
+                          <div class="col-lg-3 col-md-4 col-sm-6 col-12 text-left text-sm-right">
+                            <button href="/asd"type="button" class="btn {{button_success}} px-5 text-bold">LIVE</button>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
+                  </div>
+                  {% endfor %} {% endcomment %}
+
+
+                  <div class="col-12">
+                    <div class="info-box mb-0">
+                      <span class="info-box-icon bg-primary elevation-1"><i class="fas fa-file-alt"></i></span>
+                      <div class="info-box-content">
+                        <div class="row">
+                          <div class="col-lg-9 col-md-8 col-sm-6 col-12">
+                            <h5 class="info-box-text text-wrap mb-0">Dashboard</h5>
+                            <span class="info-box-text text-wrap">Main Page</span>
+                          </div>
+                          <div class="col-lg-3 col-md-4 col-sm-6 col-12 text-left text-sm-right">
+                            <button type="button" class="btn {{button_success}} px-5 text-bold">LIVE</button>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
+                  </div>
+                  <div class="col-12">
+                    <div class="info-box mb-0">
+                      <span class="info-box-icon bg-primary elevation-1"><i class="fas fa-file-alt"></i></span>
+        
+                      <div class="info-box-content">
+                        <div class="row">
+                          <div class="col-lg-9 col-md-8 col-sm-6 col-12">
+                            <h5 class="info-box-text text-wrap mb-0">Create Bank Accounts</h5>
+                            <span class="info-box-text text-wrap">Create and list the bank accounts of company</span>
+                          </div>
+                          <div class="col-lg-3 col-md-4 col-sm-6 col-12 text-left text-sm-right">
+                            <button type="button" class="btn {{button_success}} px-5 text-bold">LIVE</button>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="text-right">
+                      </div>
+                      <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
+                  </div>
+                  <div class="col-12">
+                    <div class="info-box mb-0">
+                      <span class="info-box-icon bg-primary elevation-1"><i class="fas fa-file-alt"></i></span>
+        
+                      <div class="info-box-content">
+                        <div class="row">
+                          <div class="col-lg-9 col-md-8 col-sm-6 col-12">
+                            <h5 class="info-box-text text-wrap mb-0">Upload Bank Statements Transaction</h5>
+                            <span class="info-box-text text-wrap">Upload Bank Statements from CSV</span>
+                          </div>
+                          <div class="col-lg-3 col-md-4 col-sm-6 col-12 text-left text-sm-right">
+                            <button type="button" class="btn {{button_success}} px-5 text-bold">LIVE</button>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="text-right">
+                      </div>
+                      <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
+                  </div>
+                  <div class="col-12">
+                    <div class="info-box mb-0">
+                      <span class="info-box-icon bg-primary elevation-1"><i class="fas fa-file-alt"></i></span>
+        
+                      <div class="info-box-content">
+                        <div class="row">
+                          <div class="col-lg-9 col-md-8 col-sm-6 col-12">
+                            <h5 class="info-box-text text-wrap mb-0">Upload General Ledger Transaction</h5>
+                            <span class="info-box-text text-wrap">Upload GL Transactions from CSV</span>
+                          </div>
+                          <div class="col-lg-3 col-md-4 col-sm-6 col-12 text-left text-sm-right">
+                            <button type="button" class="btn {{button_success}} px-5 text-bold">LIVE</button>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
+                  </div>
+                  <div class="col-12">
+                    <div class="info-box mb-0">
+                      <span class="info-box-icon bg-primary elevation-1"><i class="fas fa-file-alt"></i></span>
+        
+                      <div class="info-box-content">
+                        <div class="row">
+                          <div class="col-lg-9 col-md-8 col-sm-6 col-12">
+                            <h5 class="info-box-text text-wrap mb-0">Process Transactions</h5>
+                            <span class="info-box-text text-wrap">Process Bank Transactions and Create Report</span>
+                          </div>
+                          <div class="col-lg-3 col-md-4 col-sm-6 col-12 text-left text-sm-right">
+                            <button type="button" class="btn {{button_success}} px-5 text-bold">LIVE</button>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
+                  </div>
+                  <div class="col-12">
+                    <div class="info-box mb-0">
+                      <span class="info-box-icon bg-primary elevation-1"><i class="fas fa-file-alt"></i></span>
+        
+                      <div class="info-box-content">
+                        <div class="row">
+                          <div class="col-lg-9 col-md-8 col-sm-6 col-12">
+                            <h5 class="info-box-text text-wrap mb-0">Report Generation</h5>
+                            <span class="info-box-text text-wrap">Report Generation for Bank and GL Filter</span>
+                          </div>
+                          <div class="col-lg-3 col-md-4 col-sm-6 col-12 text-left text-sm-right">
+                            <button type="button" class="btn {{button_success}} px-5 text-bold">LIVE</button>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
+                  </div>
+                  <div class="col-12">
+                    <div class="info-box mb-0">
+                      <span class="info-box-icon bg-primary elevation-1"><i class="fas fa-file-alt"></i></span>
+        
+                      <div class="info-box-content">
+                        <div class="row">
+                          <div class="col-lg-9 col-md-8 col-sm-6 col-12">
+                            <h5 class="info-box-text text-wrap mb-0">Recon Report Generation</h5>
+                            <span class="info-box-text text-wrap">Recon Report Generation for Matches and Unmatches</span>
+                          </div>
+                          <div class="col-lg-3 col-md-4 col-sm-6 col-12 text-left text-sm-right">
+                            <button type="button" class="btn {{button_success}} px-5 text-bold">LIVE</button>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
+                  </div>
+                  <div class="col-12">
+                    <div class="info-box">
+                      <span class="info-box-icon bg-primary elevation-1"><i class="fas fa-file-alt"></i></span>
+        
+                      <div class="info-box-content">
+                        <div class="row">
+                          <div class="col-lg-9 col-md-8 col-sm-6 col-12">
+                            <h5 class="info-box-text text-wrap mb-0">Records</h5>
+                            <span class="info-box-text text-wrap">Records of transactions from CSV</span>
+                          </div>
+                          <div class="col-lg-3 col-md-4 col-sm-6 col-12 text-left text-sm-right">
+                            <button type="button" class="btn {{button_success}} px-5 text-bold">LIVE</button>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div><!--/. container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+  <!-- REQUIRED SCRIPTS -->
+  <!-- jQuery -->
+  {% for style in style_datable %} {{style}} {% endfor %}
+  <script src="/static/assets/plugins/jquery/jquery.min.js"></script>
+  <!-- Bootstrap -->
+  <script src="/static/assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <!-- overlayScrollbars -->
+  <script src="/static/assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+  <!-- AdminLTE App -->
+  <script src="/static/assets/js/adminlte.js"></script>
+
+  <!-- PAGE PLUGINS -->
+  <!-- ChartJS -->
+  <script src="/static/assets/plugins/chart.js/Chart.min.js"></script>
+
+  <!-- PAGE SCRIPTS -->
+  <!-- <script src="/static/assets/js/pages/dashboard2.js"></script> -->
+
+{% endblock javascripts %}

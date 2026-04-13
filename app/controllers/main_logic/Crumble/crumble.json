@@ -1,0 +1,87 @@
+{
+    "config": {
+        "base_url": "https://34.146.114.227:8979/",
+        "helper_v2_config": "helper_v2_config.json",
+        "default_crumble_path": "crumble.json",
+        "debug": {
+            "crumble_py": true
+        },
+        "crumb_keys": [
+            "crumb_id",
+            "crumb_name",
+            "crumb_link",
+            "crumb_desc",
+            "crumb_floc",
+            "crumb_prnt"
+        ],
+        "crumb_prio": [
+            "crumb_name",
+            "crumb_link",
+            "crumb_desc"
+        ]
+    },
+    "crumble_schema": {
+        "crumb_id": {
+            "dtype": "int",
+            "desc": "crumb identification"
+        },
+        "crumb_name": {
+            "dtype": "str",
+            "desc": "name of the crumb function"
+        },
+        "crumb_link": {
+            "dtype": "str | url",
+            "desc": "url of the crumb function"
+        },
+        "crumb_desc": {
+            "dtype": "str",
+            "desc": "description of the crumb"
+        },
+        "crumb_floc": {
+            "dtype": "str | path",
+            "desc": "location of the crumb"
+        },
+        "crumb_prnt": {
+            "dtype": "str",
+            "desc": "List of the crumb parent"
+        }
+    },
+    "crumble": [
+        {
+            "crumb_id": 1,
+            "crumb_name": "Dashboard",
+            "crumb_link": "",
+            "crumb_func": "index",
+            "crumb_desc": "",
+            "crumb_floc": "",
+            "crumb_prnt": ""
+        },
+        {
+            "crumb_id": 2,
+            "crumb_name": "Bank Account",
+            "crumb_link": "/bank-recon-bank-accounts-main/",
+            "crumb_func": "bank_recon_bank_accounts_main",
+            "crumb_desc": "Link to bank account page",
+            "crumb_floc": "",
+            "crumb_prnt": ""
+        },
+        {
+            "crumb_id": 10,
+            "crumb_name": "Upload V2",
+            "crumb_link": "/bank-recon-uploads-v2/",
+            "crumb_func": "bank_recon_upload",
+            "crumb_desc": "Bank Recon upload file page",
+            "crumb_floc": "",
+            "crumb_prnt": ""
+        },
+        {
+            "crumb_id": 11,
+            "crumb_name": "Records",
+            "crumb_link": "/bank-recon-records-main/",
+            "crumb_func": "bank_recon_records_main",
+            "crumb_desc": "Bank Recon Records page",
+            "crumb_floc": "",
+            "crumb_prnt": ""
+        }
+    ]
+}

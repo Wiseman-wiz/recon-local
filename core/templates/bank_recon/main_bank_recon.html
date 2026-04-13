@@ -1,0 +1,117 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Dashboard {% endblock %} 
+
+<!-- Element injected in the BODY element -->
+{% block body_class %} sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed {% endblock body_class %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="/static/assets/plugins/fontawesome-free/css/all.min.css">
+  <!-- overlayScrollbars -->
+  <link rel="stylesheet" href="/static/assets/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="/static/assets/css/adminlte.min.css">
+
+{% endblock stylesheets %}
+
+{% block content %}
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">Bank Recon</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="/">Home</a></li>
+              <li class="breadcrumb-item active">Bank Recon</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row justify-content-center">
+          <div class="col-xl-2 col-sm-6">
+            <div class="card card-outline card-olive shadow border-bottom border-success">
+                <div class="card-body">
+                  <a type="button" href="{% url 'bank-recon-bank-accounts-main' %}" class="btn btn-outline-success w-100">Accounts</a>
+                  <h6 class="mt-2 text-muted font-weight-normal">Access Bank Accounts</h6>
+                </div>
+            </div>
+          </div>
+          <div class="col-xl-2 col-sm-6">
+            <div class="card card-outline card-olive shadow border-bottom border-success">
+                <div class="card-body">
+                  <a type="button" href="{% url 'bank-recon-transactions' %}" class="btn btn-outline-success w-100">Bank Transactions</a>
+                  <h6 class="mt-2 text-muted font-weight-normal">Access Transactions</h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-2 col-sm-6">
+            <div class="card card-outline card-olive shadow border-bottom border-success">
+                <div class="card-body">
+                  <a type="button" href="{% url 'bank-recon-reports-main' %}" class="btn btn-outline-success w-100">Reports</a>
+                  <h6 class="mt-2 text-muted font-weight-normal">Access Reports</h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-2 col-sm-6">
+            <div class="card card-outline card-olive shadow border-bottom border-success">
+                <div class="card-body">
+                  <a type="button" href="{% url 'bank-recon-uploads' %}" class="btn btn-outline-success w-100">Upload</a>
+                  <h6 class="mt-2 text-muted font-weight-normal">Upload New Data</h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-2 col-sm-6">
+            <div class="card card-outline card-olive shadow border-bottom border-success">
+                <div class="card-body">
+                  <a type="button" href="{% url 'bank-recon-records-main' %}" class="btn btn-outline-success w-100">Records</a>
+                  <h6 class="mt-2 text-muted font-weight-normal">Access Records</h6>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div><!--/. container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+  <!-- REQUIRED SCRIPTS -->
+  <!-- jQuery -->
+  <script src="/static/assets/plugins/jquery/jquery.min.js"></script>
+  <!-- Bootstrap -->
+  <script src="/static/assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <!-- overlayScrollbars -->
+  <script src="/static/assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+  <!-- AdminLTE App -->
+  <script src="/static/assets/js/adminlte.js"></script>
+
+  <!-- PAGE PLUGINS -->
+  <!-- ChartJS -->
+  <script src="/static/assets/plugins/chart.js/Chart.min.js"></script>
+
+  <!-- PAGE SCRIPTS -->
+  <!-- <script src="/static/assets/js/pages/dashboard2.js"></script> -->
+
+{% endblock javascripts %}

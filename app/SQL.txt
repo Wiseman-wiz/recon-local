@@ -1,0 +1,9 @@
+SQL
+
+SQL - Structured
+> ACID Compliance
+> Tooling
+> Typingsetting
+> Rigid Structure
+
+NO SQL

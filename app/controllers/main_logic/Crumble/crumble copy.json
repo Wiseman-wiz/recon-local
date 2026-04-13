@@ -1,0 +1,172 @@
+{
+    "config":{
+        "base_url": "http://bank-recon.borland.com.ph:8979/",
+        "helper_v2_config" : "helper_v2_config.json",
+        "default_crumble_path":"crumble.json",
+        "debug":{
+            "crumble_py" : true
+        },
+        "crumb_keys":[
+            "crumb_id",
+            "crumb_name",
+            "crumb_link",
+            "crumb_desc",
+            "crumb_floc",
+            "crumb_prnt"
+        ],
+        "crumb_prio":[
+            "crumb_name",
+            "crumb_link",
+            "crumb_desc"
+        ]
+    
+    },
+    "crumble_schema":{
+        "crumb_id":{
+            "dtype":"int",
+            "desc":"crumb identification"
+        },
+        "crumb_name":{
+            "dtype":"str",
+            "desc":"name of the crumb function"
+        },
+        "crumb_link":{
+            "dtype":"str | url",
+            "desc":"url of the crumb function"
+        },
+        "crumb_desc":{
+            "dtype":"str",
+            "desc":"description of the crumb"
+        },
+        "crumb_floc":{
+            "dtype":"str | path",
+            "desc":"location of the crumb"
+        },
+        "crumb_prnt":{
+            "dtype":"str",
+            "desc":"List of the crumb parent"
+        }
+
+    },
+    "crumble":[
+        {
+            "crumb_id":1,
+            "crumb_name":"Dashboard",
+            "crumb_link":"",
+            "crumb_func":"index",
+            "crumb_desc":"",
+            "crumb_floc":"",
+            "crumb_prnt":""
+        },
+        {
+            "crumb_id":2,
+            "crumb_name":"Bank Account",
+            "crumb_link":"/bank-recon-bank-accounts-main/",
+            "crumb_func":"bank_recon_bank_accounts_main",
+            "crumb_desc":"Link to bank account page",
+            "crumb_floc":"",
+            "crumb_prnt":""
+        },
+        {
+            "crumb_id":3,
+            "crumb_name":"Transactions",
+            "crumb_link":"/bank-recon-transactions/",
+            "crumb_func":"bank_recon_transactions",
+            "crumb_desc":"Bank Recon Transaction main page",
+            "crumb_floc":"",
+            "crumb_prnt":""
+        },
+        {
+            "crumb_id":4,
+            "crumb_name":"Check Monitoring",
+            "crumb_link":"/bank-recon-check-monitoring/",
+            "crumb_func":"bank_recon_check_monitoring",
+            "crumb_desc":"Bank Recon Check Monitoring main page",
+            "crumb_floc":"",
+            "crumb_prnt":""
+        },
+        {
+            "crumb_id":5,
+            "crumb_name":"General Ledger",
+            "crumb_link":"/bank-recon-general-ledger-main/",
+            "crumb_func":"bank_recon_general_ledger_main",
+            "crumb_desc":"Bank Recon Genenral Ledger main page",
+            "crumb_floc":"",
+            "crumb_prnt":""
+        },
+        {
+            "crumb_id":6,
+            "crumb_name":"Reconcile Report",
+            "crumb_link":"/bank-recon-reports-main/",
+            "crumb_func":"view_bank_recon_reports_main",
+            "crumb_desc":"Bank Recon Reconcile Report main page",
+            "crumb_floc":"",
+            "crumb_prnt":""
+        },
+        {
+            "crumb_id":7,
+            "crumb_name":"Match Report",
+            "crumb_link":"/bank-recon-match-reports-main/",
+            "crumb_func":"view_bank_recon_match_reports_main",
+            "crumb_desc":"Bank Recon Match Report main page",
+            "crumb_floc":"",
+            "crumb_prnt":""
+        },
+        {
+            "crumb_id":8,
+            "crumb_name":"Cash Flow Report",
+            "crumb_link":"/bank-recon-reports-cfr/",
+            "crumb_func":"view_bank_recon_reports_cfr",
+            "crumb_desc":"Bank Recon CFR main page",
+            "crumb_floc":"",
+            "crumb_prnt":""
+        },
+        {
+            "crumb_id":9,
+            "crumb_name":"Upload",
+            "crumb_link":"/bank-recon-uploads/",
+            "crumb_func":"bank_recon_upload",
+            "crumb_desc":"Bank Recon upload file page",
+            "crumb_floc":"",
+            "crumb_prnt":""
+        },
+        {
+            "crumb_id":10,
+            "crumb_name":"Upload V2",
+            "crumb_link":"/bank-recon-uploads-v2/",
+            "crumb_func":"bank_recon_upload",
+            "crumb_desc":"Bank Recon upload file page",
+            "crumb_floc":"",
+            "crumb_prnt":""
+        },
+        {
+            "crumb_id":11,
+            "crumb_name":"Records",
+            "crumb_link":"/bank-recon-records-main/",
+            "crumb_func":"bank_recon_records_main",
+            "crumb_desc":"Bank Recon Records page",
+            "crumb_floc":"",
+            "crumb_prnt":""
+        },
+        {
+            "crumb_id":12,
+            "crumb_name":"Audit Trails",
+            "crumb_link":"/bank-recon-audit/",
+            "crumb_func":"bank_recon_audit",
+            "crumb_desc":"Bank Recon Audit Trails page",
+            "crumb_floc":"",
+            "crumb_prnt":""
+        },
+        {
+            "crumb_id":13,
+            "crumb_name":"Report V3",
+            "crumb_link":"/bank-recon-v3-main/",
+            "crumb_func":"bank-recon-v3-main",
+            "crumb_desc":"Bank Recon Report Creator",
+            "crumb_floc":"",
+            "crumb_prnt":""
+        }
+        
+    ]
+
+}

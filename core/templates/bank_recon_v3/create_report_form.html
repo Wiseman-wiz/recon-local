@@ -1,0 +1,12 @@
+db.bank_statement.aggregate([
+{
+    $match: {
+      account_number: "44774475135162" 
+    }
+  },{
+    $group: {
+      _id: null,
+      maxDate: { $min: "$transaction_date" }
+    }
+  }
+])

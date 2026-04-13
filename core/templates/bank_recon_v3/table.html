@@ -1,0 +1,24 @@
+{% if tables %}
+        <table class="table">
+            <thead>
+                <tr>
+                    {% for key in table_data.headers %}
+                        <th>{{ key }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in table_data.data %}
+                    <tr>
+                        {% for key,value in record.items %}
+                            {% if key == "id"%}
+                                <td><a href="{{ value }}">{{ value }}</a></td>
+                            {% else %}
+                                <td>{{ value }}</td>
+                            {% endif %}
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+{% endif %}

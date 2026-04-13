@@ -1,0 +1,568 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Dashboard {% endblock %} 
+
+<!-- Element injected in the BODY element -->
+{% block body_class %} sidebar-mini layout-fixed layout-navbar-fixed {% endblock body_class %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="/static/assets/plugins/fontawesome-free/css/all.min.css">
+  <!-- overlayScrollbars -->
+  <link rel="stylesheet" href="/static/assets/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+  <!-- Select2 -->
+  <link rel="stylesheet" href="/static/assets/plugins/select2/css/select2.min.css">
+  <link rel="stylesheet" href="/static/assets/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="/static/assets/css/adminlte.min.css">
+
+{% endblock stylesheets %}
+
+{% block content %}
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">Bank Recon Reports</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+              <li class="breadcrumb-item"><a href="{% url 'bank-recon' %}">Bank Recon</a></li>
+              <li class="breadcrumb-item active">Reports</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                {% include 'includes/messages.html' %}
+            </div>
+        </div>
+        {% if 'viewer' not in groups %}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        {% comment %} <h4 class="card-title w-100 pb-2">Create New Report</h4> {% endcomment %}
+                        {% if form_1 %}
+                            <div class="form-group">
+                                <form action="{% url 'bank-recon-reports-main' %}"method="POST">
+                                    {% csrf_token %}
+                                    {% comment %} <div class="row">
+                                        <div class="col-sm-12 col-lg-6">
+                                            <div class="form-group">
+                                                <label>Select GL: <i class="fas fa-info-circle fa-lg text-warning pl-1" data-toggle="tooltip" data-placement="top" title="For setting GL, it requires trndate with format of mm/dd/yyyy"></i></label>
+                                                {{form_1.source}}
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-lg-6">
+                                            <div class="form-group">
+                                                <label>Select BS: <i class="fas fa-info-circle fa-lg text-warning pl-1" data-toggle="tooltip" data-placement="top" title="For setting BS, it requires transaction_reference and transaction_date with format of mm/dd/yyyy"></i></label>
+                                                {{form_1.target}}
+                                            </div>
+                                        </div>
+                                    </div> {% endcomment %}
+                                    <div class="row mt-3">
+                                        <div class="col">
+                                            <input class="btn btn-primary" type="submit" value="Create New Recon Report" name="submit">
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        {% endif %}
+                        {% if form_2 %}
+                            <div>
+                                <form action="{% url 'bank-recon-reports-main' %}"method="POST">
+                                    {% csrf_token %}
+                                    <br>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="card card-outline card-olive shadow border-bottom border-success"> 
+                                                <div class="card-body text-center p-1">
+                                                    <p class="mb-0">SOURCE:  {{source}}</p>
+                                                    <p class="mb-0">TARGET: {{target}}</p> 
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-3 offset-lg-4 col-sm-12">
+                                            <div class="form-group">
+                                                {{form_5}}
+                                            </div>
+                                            <div class="form-group text-center">
+                                                <input type="text" name="var_source" value={{source}} hidden="True">
+                                                <input type="text" name="var_target" value={{target}} hidden="True">
+                                                <a href="{% url 'bank-recon-reports-main' %}" class="btn {{button_success}}">Cancel</a>
+                                                <input type="submit" class="btn {{button_success}}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <center>
+                                            <h5 class="text-bold">Sample Data</h5>
+                                            </center>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-4 offset-lg-2 col-sm-6">
+                                            <center>
+                                            <h5>{{ source }}</h5>
+                                            </center>
+                                            <table class="table table-hover table-striped table-sm table-sm">
+                                                <tbody>
+                                                    {% for key,value in source_data.items %}
+                                                        <tr><td>{{key}} : {{value}}</td></tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="col-lg-4 col-sm-6">
+                                            <center>
+                                            <h5>{{ target }}</h5>
+                                            </center>
+                                            <table class="table table-hover table-striped table-sm table-sm">
+                                                <tbody>
+                                                    {% for key,value in target_data.items %}
+                                                        <tr><td>{{key}} : {{value}}</td></tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <br>
+
+                                    <div class="row">
+                                        <div class="col-lg-8 offset-lg-2 col-sm-12">
+                                            <center>
+                                            <h5 class="text-bold">Select Level 1 Match Statements</h5>
+                                            </center>
+                                            <table class="table table-hover table-striped table-sm">
+                                                <thead>
+                                                    <th>Source Fields</th>
+                                                    <th>Target Fields</th>
+                                                </thead>
+                                                <tbody>
+                                                    {{form_2}}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="row">
+                                        <div class="col-lg-4 offset-lg-2 col-sm-6">
+                                            <center>
+                                                <h5 class="text-bold">Select Filter Statements for {{ source }}</h5>
+                                            </center>
+                                            <table class="table table-hover table-striped table-sm">
+                                                <thead>
+                                                    <th>Source Fields</th>
+                                                    <th>Source Filters <i class="fas fa-info-circle fa-lg text-warning pl-1" data-toggle="tooltip" data-placement="top" title="To set a filter for each fields, uncheck the field you want to exclude in the report."></i></th>
+                                                </thead>
+                                                <tbody>
+                                                    {{form_3}}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="col-lg-4 col-sm-6">
+                                            <center>
+                                                <h5 class="text-bold">Select Filter Statements for {{ target }}</h5>
+                                            </center>
+                                            <table class="table table-hover table-striped table-sm">
+                                                <thead>
+                                                    <th>Source Fields</th>
+                                                    <th>Source Filters <i class="fas fa-info-circle fa-lg text-warning pl-1" data-toggle="tooltip" data-placement="top" title="To set a filter for each fields, uncheck the field you want to exclude in the report."></i></th>
+                                                </thead>
+                                                <tbody>
+                                                    {{form_4}}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}    
+        {% if pending or not_approved or approved%}
+        <div class="row mb-3">
+            <div class="col-6 ml-auto">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fa fa-search"></i></span>
+                    </div>
+                    <input type="search" class="form-control form-control" id="search-filter" placeholder="Search reports here">
+                </div>
+            </div>
+        </div>
+        <div class="row show-hide-list" id="rendered-list">
+           
+            <div class="col-12">
+                <div class="card card-success card-outline card-tabs">
+                    <div class="card-header p-0 pt-1 border-bottom-0">
+                        <ul class="nav nav-tabs" id="custom-tabs-three-tab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="approved-tab" data-toggle="pill" href="#approved" role="tab" aria-controls="approved" aria-selected="false">Approved</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="for-approval-tab" data-toggle="pill" href="#for-approval" role="tab" aria-controls="for-approval" aria-selected="false">For Approval</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link d-none" id="not-approved-tab" data-toggle="pill" href="#not-approved" role="tab" aria-controls="not-approved" aria-selected="true">Not Approved</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="tab-content" id="custom-tabs-three-tabContent">
+                            <div class="tab-pane fade show active" id="approved" role="tabpanel" aria-labelledby="approved-tab">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <form id="formApproved" action="/bank-recon-reports-posts/" method="post">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="redirect_to" value="{{ request.path }}">
+                                            <input type="hidden" name="collection" value="reports">
+                                            <div class="row">
+                                                {% if approved %}
+                                                    {% if 'finance_admin' in groups %}
+                                                    <section class="col-12">
+                                                        <div class="btn-group mb-3" role="group" aria-label="approvals">
+                                                            <div class="btn-group-toggle" data-toggle="buttons">
+                                                                <label class="btn btn-primary font-weight-normal">
+                                                                    <input type="checkbox" id="checkAllApproved"> Select All
+                                                                </label>
+                                                            </div>
+                                                            <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#del-prompt-approvals">Delete</button>
+                                                            <div id="del-prompt-approvals" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="report-delete-prompt" aria-hidden="true">
+                                                                <div class="modal-dialog " role="document">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <h5 class="modal-title" id="report-delete-prompt">Delete a Report</h5>
+                                                                            <button class="close" data-dismiss="modal" aria-label="Close">
+                                                                                <span aria-hidden="true">&times;</span>
+                                                                            </button>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            <label for="remarks">Remarks</label>
+                                                                            <input type="text" name="remarks" id="remarks" class="form-control" aria-describedby="remarksHelp">
+                                                                            <small id="remarksHelp" class="text-muted">Input your reason for deleting the report</small>
+                                                                        </div>
+                                                                        <div class="modal-footer">
+                                                                            <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">CANCEL</button>
+                                                                            <button type="submit" class="btn {{button_danger}}" name="btn_delete">DELETE</button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            {% if 'finance_admin' in groups  %}
+                                                            <button type="submit" name="btn_approval" value="pending" class="btn btn-primary">Revert to For Approval</button>
+                                                            {% endif %}
+                                                        </div>
+                                                    </section>
+                                                    {% endif %}
+
+                                                    {% comment %} <section class="col-12">
+                                                         <div class="accordion" id="accordionExample">
+                                                            <div class="card">
+                                                                <div class="card-header" id="headingOne">
+                                                                <h2 class="mb-0">
+                                                                    <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                                                    Collapsible Group Item #1
+                                                                    </button>
+                                                                </h2>
+                                                                </div>
+
+                                                                <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+                                                                <div class="card-body">
+                                                                    Some placeholder content for the first accordion panel. This panel is shown by default, thanks to the <code>.show</code> class.
+                                                                </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="card">
+                                                                <div class="card-header" id="headingTwo">
+                                                                <h2 class="mb-0">
+                                                                    <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                                                    Collapsible Group Item #2
+                                                                    </button>
+                                                                </h2>
+                                                                </div>
+                                                                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                                                                <div class="card-body">
+                                                                    Some placeholder content for the second accordion panel. This panel is hidden by default.
+                                                                </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="card">
+                                                                <div class="card-header" id="headingThree">
+                                                                <h2 class="mb-0">
+                                                                    <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                                                    Collapsible Group Item #3
+                                                                    </button>
+                                                                </h2>
+                                                                </div>
+                                                                <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
+                                                                <div class="card-body">
+                                                                    And lastly, the placeholder content for the third and final accordion panel. This panel is hidden by default.
+                                                                </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </section> {% endcomment %}
+
+                                                    {% for report in approved %}
+                                                        <section class="col-xl-3 col-md-6 col-sm-6 show-hide-item" id="{{report.report_name}}">
+                                                            <div class="card card-outline card-olive shadow border-bottom border-success">
+                                                                <div class="card-body px-1">
+                                                                    <div class="row">
+                                                                        {% if 'finance_admin' in groups %}
+                                                                        <div class="col-1 my-auto">
+                                                                            <div class="custom-control custom-checkbox">
+                                                                                <input type="checkbox" class="custom-control-input checkOneApproved" id="checkApprovedReport{{ forloop.counter }}" name="report_id" value="{{ report.report_id }}">
+                                                                                <label class="custom-control-label" for="checkApprovedReport{{ forloop.counter }}"></label>
+                                                                            </div>
+                                                                        </div>
+                                                                        {% endif %}    
+                                                                        <div class="{% if 'finance_admin' in groups %}col-11{% else %}col-12{% endif %}">
+                                                                            <div class="d-flex align-items-center align-self-start">
+                                                                                <a type="button" href="/bank-recon-reports/{{report.report_id}}" style="width:100%" class="btn {{button_success}} px-1 text-truncate">{{report.report_name|upper}}</a>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </section>
+                                                    {% endfor %}
+                                                {% else %}
+                                                    <div class="col-12">
+                                                        <h5 class="text-center">No reports available</h5>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="for-approval" role="tabpanel" aria-labelledby="for-approval-tab">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <form id="formPending" action="/bank-recon-reports-posts/" method="post">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="redirect_to" value="{{ request.path }}">
+                                            <input type="hidden" name="collection" value="reports">
+                                            <div class="row">
+                                                {% if pending %}
+                                                    {% if 'finance_admin' in groups or 'approvers' in groups or 'processor' in groups %}
+                                                    <section class="col-12">
+                                                        <div class="btn-group mb-3" role="group" aria-label="approvals">
+                                                            <div class="btn-group-toggle" data-toggle="buttons">
+                                                                <label class="btn btn-primary font-weight-normal">
+                                                                    <input type="checkbox" id="checkAllForApproval"> Select All
+                                                                </label>
+                                                            </div>
+                                                            <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#del-prompt-pending">Delete</button>
+                                                            <div id="del-prompt-pending" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="report-delete-prompt" aria-hidden="true">
+                                                                <div class="modal-dialog" role="document">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <h5 class="modal-title" id="report-delete-prompt">Delete a Report</h5>
+                                                                            <button class="close" data-dismiss="modal" aria-label="Close">
+                                                                                <span aria-hidden="true">&times;</span>
+                                                                            </button>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            <div class="form-group">
+                                                                                <label for="remarks">Remarks</label>
+                                                                                <input type="text" name="remarks" id="remarks" class="form-control" aria-describedby="remarksHelp">
+                                                                                <small id="remarksHelp" class="text-muted">Input your reason for deleting the report</small>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="modal-footer">
+                                                                            <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">CANCEL</button>
+                                                                            <button type="submit" class="btn {{button_danger}}" name="btn_delete">DELETE</button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            {% if 'finance_admin' in groups or 'approvers' in groups  %}
+                                                            <button type="submit" name="btn_approval" value="approve" class="btn btn-primary">Approve</button>
+                                                            <button type="submit" name="btn_approval" value="reject" class="btn btn-primary d-none">Reject</button>
+                                                            {% endif %}
+                                                        </div>
+                                                    </section>
+                                                    {% endif %}
+                                                    {% for report in pending %}
+                                                        <section class="col-xl-3 col-lg-4 col-md-6 col-sm-6 show-hide-item" id="{{report.report_name}}">
+                                                            <div class="card card-outline card-olive shadow border-bottom border-success">
+                                                                <div class="card-body px-1">
+                                                                    <div class="row">
+                                                                        {% if 'finance_admin' in groups or 'approvers' in groups or 'processor' in groups %}
+                                                                        <div class="col-1 my-auto">
+                                                                            <div class="custom-control custom-checkbox">
+                                                                                <input type="checkbox" class="custom-control-input checkOneForApproval" id="checkPendingReport{{ forloop.counter }}" name="report_id" value="{{ report.report_id }}">
+                                                                                <label class="custom-control-label" for="checkPendingReport{{ forloop.counter }}"></label>
+                                                                            </div>
+                                                                        </div>
+                                                                        {% endif %}
+                                                                        <div class="{% if 'finance_admin' in groups or 'approvers' in groups or 'processor' in groups %}col-11{% else %}col-12{% endif %}">
+                                                                            <div class="d-flex align-items-center align-self-start">
+                                                                                <a type="button" href="/bank-recon-reports/{{report.report_id}}" style="width:100%" class="btn {{button_success}} px-1 text-truncate">{{report.report_name|upper}}</a>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </section>
+                                                    {% endfor %}
+                                            
+                                                {% else %}
+                                                    <div class="col-12">
+                                                        <h5 class="text-center">No reports available</h5>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="not-approved" role="tabpanel" aria-labelledby="not-approved-tab">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <form id="formRejected" action="/bank-recon-reports-posts/" method="post">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="redirect_to" value="{{ request.path }}">
+                                            <input type="hidden" name="collection" value="reports">
+                                            <div class="row">
+                                                {% if not_approved %}
+                                                    {% if 'finance_admin' in groups or 'approvers' in groups %}
+                                                    <section class="col-12">
+                                                        <div class="btn-group mb-3" role="group" aria-label="approvals">
+                                                            <div class="btn-group-toggle" data-toggle="buttons">
+                                                                <label class="btn btn-primary font-weight-normal">
+                                                                    <input type="checkbox" id="checkAllNotApproved"> Select All
+                                                                </label>
+                                                            </div>
+                                                            {% if 'finance_admin' in groups %}    
+                                                            <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#del-prompt-not-approved">Delete</button>
+                                                            <div id="del-prompt-not-approved" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="report-delete-prompt" aria-hidden="true">
+                                                                <div class="modal-dialog " role="document">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <h5 class="modal-title" id="report-delete-prompt">Delete Report</h5>
+                                                                            <button class="close" data-dismiss="modal" aria-label="Close">
+                                                                                <span aria-hidden="true">&times;</span>
+                                                                            </button>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            <p>Are you sure you want to delete the Report/s?</p>
+                                                                        </div>
+                                                                        <div class="modal-footer">
+                                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                                            <button type="submit" class="btn {{button_danger}}" name="btn_delete" form="formRejected">Delete</button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            {% endif %}
+                                                            <button type="submit" name="btn_approval" value="pending" class="btn btn-primary" form="formRejected">For Approval</button>
+                                                            <button type="submit" name="btn_approval" value="approve" class="btn btn-primary" form="formRejected">Approve</button>
+
+                                                        </div>
+                                                    </section>
+                                                    {% endif %}
+                                                    {% for report in not_approved %}
+                                                        <section class="col-xl-3 col-md-6 col-sm-6 show-hide-item" id="{{report.report_name}}">
+                                                            <div class="card card-outline card-olive shadow border-bottom border-success">
+                                                                <div class="card-body px-1">
+                                                                    <div class="row">
+                                                                        {% if 'finance_admin' in groups or 'approvers' in groups %}
+                                                                        <div class="col-1 my-auto">
+                                                                            <div class="custom-control custom-checkbox">
+                                                                                <input type="checkbox" class="custom-control-input checkOneNotApproved" id="checkRejectedReport{{ forloop.counter }}" name="report_id" value="{{ report.report_id }}">
+                                                                                <label class="custom-control-label" for="checkRejectedReport{{ forloop.counter }}"></label>
+                                                                            </div>
+                                                                        </div>
+                                                                        {% endif %}    
+                                                                        <div class="{% if 'finance_admin' in groups or 'approvers' in groups %}col-11{% else %}col-12{% endif %}">
+                                                                            <div class="d-flex align-items-center align-self-start">
+                                                                                <a type="button" href="/bank-recon-reports/{{report.report_id}}" style="width:100%" class="btn {{button_success}} px-1 text-truncate">{{report.report_name|upper}}</a>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </section>
+                                                    {% endfor %}
+                                                {% else %}
+                                                    <div class="col-12">
+                                                        <h5 class="text-center">No reports available</h5>
+                                                    </div>
+                                                {% endif %}
+                                            </div>  
+                                        </form>
+                                        <div class="d-flex justify-content-center invisible">
+                                            <input class="btn {{button_success}} mx-1 btn-show-less" id="lessButton" type="button" value="Show Less" onclick="showLess()"/>
+                                            <input class="btn {{button_success}} mx-1 btn-show-more" id="moreButton" type="button" value="Show More" onclick="showMore()"/>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        {% endif %}
+    
+      </div><!--/. container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+  <!-- REQUIRED SCRIPTS -->
+  <!-- jQuery -->
+  <script src="/static/assets/plugins/jquery/jquery.min.js"></script>
+  <!-- Bootstrap -->
+  <script src="/static/assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <!-- Select2 -->
+  <script src="/static/assets/plugins/select2/js/select2.full.min.js"></script>
+  <!-- overlayScrollbars -->
+  <script src="/static/assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+  <!-- AdminLTE App -->
+  <script src="/static/assets/js/adminlte.js"></script>
+
+  <!-- PAGE PLUGINS -->
+  <!-- ChartJS -->
+  <script src="/static/assets/plugins/chart.js/Chart.min.js"></script>
+
+  <!-- PAGE SCRIPTS -->
+  <!-- <script src="/static/assets/js/app/reports.js"></script> -->
+  <script src="/static/assets/js/app/search.js"></script>
+  <script src="/static/assets/js/app/reports_main.js"></script>
+
+{% endblock javascripts %}

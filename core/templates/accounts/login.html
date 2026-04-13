@@ -1,0 +1,100 @@
+{% extends "layouts/base-fullscreen.html" %}
+
+{% block title %} Login {% endblock %} 
+
+<!-- Element injected in the BODY element -->
+{% block body_class %} login-page bg-gray-dark {% endblock body_class %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="/static/assets/plugins/fontawesome-free/css/all.min.css">
+  <!-- icheck bootstrap -->
+  <link rel="stylesheet" href="/static/assets/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="/static/assets/css/adminlte.min.css">
+
+{% endblock stylesheets %}
+
+{% block content %}
+
+  <div class="login-box">
+
+    <div class="login-logo">
+        <a href="/" class="font-weight-bold text-light">Borland Development Corporation</a>
+    </div>
+
+    <!-- /.login-logo -->
+    <div class="card">
+      <div class="card-body login-card-body">
+
+            <p class="login-box-msg">
+            {% if msg %}
+                {{ msg | safe }}
+            {% else %}
+            {% endif %}
+        </p>
+
+        <form method="post" action="">
+
+          {% csrf_token %}
+
+          <div class="input-group mb-3">
+            {{ form.username }}
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fas fa-user"></span>
+              </div>
+            </div>
+          </div>
+          <div class="input-group mb-3">
+            {{ form.password }}
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fas fa-lock"></span>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-8">
+              <div class="icheck-primary">
+                <input type="checkbox" id="remember">
+                <label for="remember">
+                  Remember Me
+                </label>
+              </div>
+            </div>
+            <!-- /.col -->
+            <div class="col-4">
+              <button type="submit" name="login" class="btn btn-primary btn-block">Login</button>
+            </div>
+            <!-- /.col -->
+          </div>
+          <div class="social-auth-links text-center mb-3">
+            <hr>
+            <a href="#" class="btn btn-block btn-danger">
+              <i class="fab fa-google mr-2"></i> Sign in using Google
+            </a>
+          </div>
+        </form>
+
+      </div>
+      <!-- /.login-card-body -->
+    </div>
+
+  </div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+  <!-- jQuery -->
+  <script src="/static/assets/plugins/jquery/jquery.min.js"></script>
+  <!-- Bootstrap 4 -->
+  <script src="/static/assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+{% endblock javascripts %}

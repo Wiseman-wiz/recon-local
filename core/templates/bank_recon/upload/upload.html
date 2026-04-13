@@ -1,0 +1,234 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Bank Recon {% endblock %} 
+
+<!-- Element injected in the BODY element -->
+{% block body_class %} sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed {% endblock body_class %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="/static/assets/plugins/fontawesome-free/css/all.min.css">
+  <!-- overlayScrollbars -->
+  <link rel="stylesheet" href="/static/assets/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="/static/assets/css/adminlte.min.css">
+
+{% endblock stylesheets %}
+
+{% block content %}
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">Uploads</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'bank-recon' %}">Bank Recon</a></li>
+                <li class="breadcrumb-item active">Uploads</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row show-hide-list" id="rendered-list">
+            {% include 'includes/messages.html' %}
+            <div class="col-6 mb-6">
+                <button type="button" class="btn {{button_success}} btn-icon-text" data-toggle="modal" data-target="#upload_new_format">
+                    <i class="fas fa-file-upload"></i> Upload CSV
+                </button>
+                <div class="modal fade" id="upload_new_format" tabindex="-1" aria-labelledby="upload_new_format_label" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <form action="{% url 'bank-recon-uploads' %}" method="post" enctype="multipart/form-data">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="upload_new_format_label">Upload File</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="modal-body">
+                                            <div class="form-group">
+                                                <div class="alert alert-warning" role="alert">
+                                                    <h6 class="alert-heading my-0 text-bold">NOTE</h6><hr class="my-1">
+                                                    <h6 class="text-bold">In Uploads Module, new Record's name will base on the filename that will be uploaded.</h6>
+                                                    <h6 class="text-bold">Special Characters other than underscore "_" are not accepted</h6>
+                                                    <h6 class="text-bold">For appending records, you can download the csv template headers to view the required headers in that record.</h6>
+                                                    <h6 class="text-bold">Sample format: new_record_name.csv</h6>
+                                                    <h6 class="text-bold">In date and time format, use mm/dd/YYYY HH:MM:ss or mm/dd/YYYY format</h6>
+                                                    <h6 class="text-bold">Sample datetime format: 01/31/2021 23:59:59 or 01/31/2021 </h6>
+                                                </div>
+                                                <label>Upload File</label>
+                                                
+                                                <div class="custom-file">
+                                                    <input type="file" class="custom-file-input" id="customFile" name="file_upload" accept=".csv">
+                                                    <label class="custom-file-label" for="customFile">Upload CSV</label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <select class="form-control col-5" id="fileOperation" name="file_operation">
+                                                    <option value="gl" selected>General Ledger</option>
+                                                    <option value="bs">Bank Statement</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+                                    <button type="submit" name="file_csv" class="btn {{button_success}}">Upload File</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" class="btn {{button_success}} btn-icon-text ml-2" data-toggle="modal" data-target="#upload_access_file">
+                    <i class="fas fa-file-upload"></i> Upload Access File
+                </button>
+                <div class="modal fade" id="upload_access_file" tabindex="-1" aria-labelledby="upload_access_file_label" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <form action="{% url 'bank-recon-uploads-v2' %}" method="post" enctype="multipart/form-data">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="upload_new_format_label">Upload File</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="modal-body">
+                                            <label>Upload File</label>
+                                            <div class="custom-file">
+                                                <input type="file" class="custom-file-input" id="customFile" name="file_upload_access" accept=".mdb, .accdb">
+                                                <label class="custom-file-label" for="customFile">Upload Access File</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+                                    <button type="submit" name="file_access" class="btn {{button_success}}">Upload File</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 ml-auto mb-3">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fa fa-search"></i></span>
+                    </div>
+                    <input type="search" class="form-control form-control" id="search-filter" placeholder="Search uploads here">
+                </div>
+            </div>
+            {% if collections.items %}
+            {% for group_name, group_records in collections.items %}
+                <div class="col-12 show-hide-item d-none">
+                    <div class="card">
+                        <div class="card-body py-1">
+                            <h5 class="card-title w-100 pb-1">{{group_name|upper}}</h5>
+                            <div class="row">
+                                {% for record in group_records %}
+                                <section class="col-xl-3 col-sm-6" id="{{record}}">
+                                    <div class="card card-outline card-olive shadow border-bottom border-success">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <div class="d-flex align-items-center align-self-start">
+                                                        <a href="{% url 'bank-recon-export' filename=record %}" class="btn {{button_success}} w-100 text-truncate" id="record-name" target="_blank" rel="noopener noreferrer"><i class="fas fa-file-download"></i> Download CSV of {{record|upper}}</a>
+                                                        <a href="/bank-recon-records/{{record|slugify}}" class="btn {{button_success}} ml-2"><i class="fas fa-external-link-alt"></i></a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %} 
+            <div class="col-12 mb-1 d-flex justify-content-center">
+                <button class="btn {{button_success}} btn-sm btn-show-less mx-1" id="lessButton" type="button" onclick="showLess()">Show Less</button>
+                <button class="btn {{button_success}} btn-sm btn-show-more mx-1" id="moreButton" type="button" onclick="showMore()">Show More</button>
+            </div> 
+            {% else %}
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body mx-auto">
+                        <h5 class="card-title">No Records Available</h5>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        
+        </div>
+    
+      </div><!--/. container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+  <!-- REQUIRED SCRIPTS -->
+  <!-- jQuery -->
+  <script src="/static/assets/plugins/jquery/jquery.min.js"></script>
+  <!-- Bootstrap -->
+  <script src="/static/assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <!-- bs-custom-file-input -->
+  <script src="/static/assets/plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
+  <!-- overlayScrollbars -->
+  <script src="/static/assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+  <!-- AdminLTE App -->
+  <script src="/static/assets/js/adminlte.js"></script>
+
+  <!-- PAGE PLUGINS -->
+  
+  <!-- PAGE SCRIPTS -->
+  <script src="/static/assets/js/app/records.js"></script>
+
+  <script>
+    $(function () {
+        bsCustomFileInput.init();
+    })
+
+    $(document).on('mouseenter', ".text-truncate", function () {
+        var $this = $(this);
+        if (this.offsetWidth < this.scrollWidth && !$this.attr('title')) {
+            $this.tooltip({
+                title: $this.text(),
+                placement: "bottom"
+            });
+            $this.tooltip('show');
+        }
+      });
+      
+      
+  </script>
+
+{% endblock javascripts %}

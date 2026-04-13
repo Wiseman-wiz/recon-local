@@ -1,0 +1,189 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Bank Recon {% endblock %} 
+
+<!-- Element injected in the BODY element -->
+{% block body_class %} sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed {% endblock body_class %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="/static/assets/plugins/fontawesome-free/css/all.min.css">
+  <!-- overlayScrollbars -->
+  <link rel="stylesheet" href="/static/assets/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+
+  <link rel="stylesheet" href="/static/assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+  <link rel="stylesheet" href="/static/assets/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+  <link rel="stylesheet" href="/static/assets/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="/static/assets/css/adminlte.min.css">
+
+{% endblock stylesheets %}
+
+{% block content %}
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">General Ledger</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item"><a href="{% url 'bank-recon' %">Bank Recon</a></li>
+                <li class="breadcrumb-item" aria-current="page"><a href="{% url 'bank-recon-general-ledger-main' %}">General Ledger</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{collection}}</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title w-100 pb-2" id="report-name">General Ledger</h4>
+                        <table id="main" class="display nowrap compact dt-responsive table-striped w-100">
+                            <thead >
+                                <tr>
+                                    {% if general_ledger %}
+                                        {% for key in general_ledger|first %}
+                                            {% if key != "id" %}
+                                            <th>{{key}}</th>
+    
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if general_ledger %}
+                                    {% for row in general_ledger %}
+                                        <tr>
+                                            {% for key,value in row.items %}
+                                            {% if key != "id" %}
+    
+                                            <td>{{value}}</td>
+                                            {% endif %}
+    
+                                            {% endfor %}
+                                        </tr>
+                                    {% endfor %}
+                                {% endif %}
+                            
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div><!--/. container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+  <!-- REQUIRED SCRIPTS -->
+  <!-- jQuery -->
+  <script src="/static/assets/plugins/jquery/jquery.min.js"></script>
+  <!-- Bootstrap -->
+  <script src="/static/assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <!-- overlayScrollbars -->
+  <script src="/static/assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+
+  <script src="/static/assets/plugins/datatables/jquery.dataTables.min.js"></script>
+  <script src="/static/assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+  <script src="/static/assets/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+  <script src="/static/assets/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+  <script src="/static/assets/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+  <script src="/static/assets/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+  <script src="/static/assets/plugins/jszip/jszip.min.js"></script>
+  <script src="/static/assets/plugins/pdfmake/pdfmake.min.js"></script>
+  <script src="/static/assets/plugins/pdfmake/vfs_fonts.js"></script>
+  <script src="/static/assets/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+  <script src="/static/assets/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+  <script src="/static/assets/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+  <!-- AdminLTE App -->
+  <script src="/static/assets/js/adminlte.js"></script>
+
+  <!-- PAGE PLUGINS -->
+  <!-- ChartJS -->
+  <script src="/static/assets/plugins/chart.js/Chart.min.js"></script>
+
+  <!-- PAGE SCRIPTS -->
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var table = $('table#main').DataTable({
+                dom: 'Blfrtip',
+                stateSave: true,
+                lengthMenu: [
+                    [ 10, 25, 50, 100, -1 ],
+                    [ '10 rows', '25 rows', '50 rows', '100 rows', 'Show all' ]
+                ],
+                lengthChange: false,
+                responsive: true,
+                language: {
+                    buttons: {
+                        colvisRestore: "RESET COLUMN"
+                    }
+                },
+                buttons: [ 
+                    {
+                        extend: 'excel',
+                        filename: function () { return document.querySelector("#report-name").textContent },
+                        exportOptions: { 
+                            columns: function(idx, data, node) {
+                                if ($(node).hasClass('noVis')) {
+                                    return false;
+                                }
+                                return $('table#main').DataTable().column(idx).visible();
+                            } 
+                        }
+                    },
+                    {
+                        extend: 'csv',
+                        filename: function () { return document.querySelector("#report-name").textContent },
+                        exportOptions: { 
+                            columns: function(idx, data, node) {
+                                if ($(node).hasClass('noVis')) {
+                                    return false;
+                                }
+                                return $('table#main').DataTable().column(idx).visible();
+                            }
+                        }
+                    },
+                    {
+                        extend: 'colvis',
+                        postfixButtons: [ 'colvisRestore' ]
+                    }, 
+                    'pageLength',
+                ],
+                columnDefs: [
+                    {
+                        targets: '_all',
+                        visible: true
+                    }
+                ]
+            });
+            table.buttons().container()
+            .appendTo( '#main_wrapper .col-md-6:eq(0)' );
+    } );
+    </script>
+
+{% endblock javascripts %}

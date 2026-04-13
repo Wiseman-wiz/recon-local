@@ -1,0 +1,416 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Water Recon {% endblock %} 
+
+<!-- Element injected in the BODY element -->
+{% block body_class %} sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed {% endblock body_class %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="/static/assets/plugins/fontawesome-free/css/all.min.css">
+  <!-- overlayScrollbars -->
+  <link rel="stylesheet" href="/static/assets/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+
+  <link rel="stylesheet" href="/static/assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+  <link rel="stylesheet" href="/static/assets/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+  <link rel="stylesheet" href="/static/assets/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="/static/assets/css/adminlte.min.css">
+
+{% endblock stylesheets %}
+
+{% block content %}
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">Bank Recon Report</h1>
+            <div class="d-flex mt-3">
+                <h4 class="m-0">{{report_name|title}}</h4>
+                <i class="fas fa-chevron-circle-down align-self-center ml-2" role="button" data-toggle="collapse" href="#reportInfo"  aria-expanded="false" aria-controls="reportInfo"></i>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item"><a href="{% url 'bank-recon' %}">Bank Recon</a></li>
+                <li class="breadcrumb-item"><a href="/bank-recon-match-reports-main/">Reports</a></li>
+                <li class="breadcrumb-item active" id="report-name">{{report_name|title}}</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="collapse" id="reportInfo">
+                    <div class="card card-body">
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <h5>Filtered Fields in {{source|title}}</h5>
+                                {% if filter_qry_src %}
+                                <ul class="list-group list-group-flush mb-2">
+                                    {% for key, value in filter_qry_src.items %}
+                                        <li class="list-group-item py-0">
+                                            {{ key }} = {% if value %}Showed{% else %}Hidden{% endif %}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                                {% else %}
+                                <p>All fields are shown</p>
+                                {% endif %}
+
+                                <h5>Filtered Fields in {{target|title}}</h5>
+                                {% if filter_qry_trg %}
+                                <ul class="list-group list-group-flush mb-2">
+                                    {% for key, value in filter_qry_trg.items %}
+                                        <li class="list-group-item py-0"> 
+                                            {{ key }} = {% if value %}Showed{% else %}Hidden{% endif %}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                                {% else %}
+                                <p>All fields are shown</p>
+                                {% endif %}
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <h5>Matched Fields</h5>
+                                {% if matched_fields %}
+                                <ul class="list-group list-group-flush mb-2">
+                                    {% for key, value in matched_fields.items %}
+                                        <li class="list-group-item py-0"> 
+                                            {{ key }} = {{ value }}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                                {% else %}
+                                <p>No matched fields on this report</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <!-- <div class="row">
+                            <div class="col-6">
+                            </div>
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title w-100 pb-2">Report Summary</h4>
+                        
+                        <table id="main" class="display nowrap compact dt-responsive table-striped table-hover w-100">
+                            <thead >
+                                <tr>
+                                    {% if summary_report %}
+                                        <th></th>
+                                        {% for pair_record in summary_report|first %}
+                                                <th>{{pair_record}}</th>
+                                        {% endfor %}
+                                    {% endif %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if summary_report %}
+                                    {% for row in summary_report %}
+                                        <tr>
+                                            <td></td>
+                                            {% for key,value in row.items %}
+                                            {% if key != "id" %}
+
+                                            <td>{{value}}</td>
+                                            {% endif %}
+
+                                            {% endfor %}
+                                        </tr>
+                                    {% endfor %}
+                                {% endif %}
+                            
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+        <!-- <br>
+        <br> -->
+        <div class="row">
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title w-100 pb-2">Matched Reports</h4>
+                        <form method="post" action="/bank-recon-reports/{{collection}}">
+                            {% csrf_token %}
+                            <!-- <div class="btn-group" role="group" aria-label="push buttons">
+                                <button class="btn btn-outline-success my-1" type="submit"> Push to Check Monitoring</button>
+                            </div> -->
+                        
+                            <br>
+                            <table id="main" class="display nowrap compact dt-responsive table-striped table-hover table-bordered w-100">
+                                <thead >
+                                    <tr>
+                                        {% if matched_records %}
+
+                                            <th></th>
+                                            <th><input type="checkbox" name="checkbox" id="checkAll" value="bulk"></th>
+                                            {% for pair_record in matched_records|first %}
+                                                <th>{{pair_record|upper}}</th>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% if matched_records %}
+                                        {% for row in matched_records %}
+                                            <tr>
+                                                <td></td>
+                                                
+                                                {% for key,value in row.items %}
+                                                {% if key != "id" %}
+                                                    {% if forloop.first %}
+                                                    <td>
+                                                        <input type="checkbox" name="report[]" class="checkOne" value="{{row}}">
+                                                    </td>
+                                                    {% endif %}
+                                                
+                                                <td>{{value}}</td>
+                                                {% endif %}
+
+                                                {% endfor %}
+
+                                            </tr>
+                                        {% endfor %}
+                                    {% endif %}
+                                
+                                </tbody>
+                            </table>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+        <br>
+        <div class="row">
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row mb-2">
+                            <div class="col-auto">
+                                <h4 class="card-title">UNMATCHED IN {{source|title|upper}}</h4>
+                            </div>
+                            <div class="col d-flex align-self-center">
+                                <span class="badge badge-success align-middle">Source</span>
+                            </div>
+                        </div>
+                        <table id="main" class="display nowrap compact dt-responsive table-striped table-hover table-bordered w-100">
+                            <thead >
+                                <tr>
+                                    {% if unmatched_records_source %}
+                                        <th></th>
+                                        {% for pair_record in unmatched_records_source|first %}
+                                                <th>{{pair_record|upper}}</th>
+                                        {% endfor %}
+                                    {% endif %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if unmatched_records_source %}
+                                    {% for row in unmatched_records_source %}
+                                        <tr>
+                                            <td></td>
+                                            {% for key,value in row.items %}
+                                            {% if key != "id" %}
+
+                                            <td>{{value}}</td>
+                                            {% endif %}
+
+                                            {% endfor %}
+                                        </tr>
+                                    {% endfor %}
+                                {% endif %}
+                            
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+        <br>
+        <div class="row">
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row mb-2">
+                            <div class="col-auto">
+                                <h4 class="card-title">UNMATCHED IN {{target|title|upper}}</h4>
+                            </div>
+                            <div class="col d-flex align-self-center">
+                                <span class="badge badge-success align-middle">Target</span>
+                            </div>
+                        </div>
+                        
+                        <table id="main" class="display nowrap compact dt-responsive table-striped table-hover table-bordered w-100" cellspacing="0">
+                            <thead >
+                                <tr>
+                                    {% if unmatched_records_target %}
+                                        <th></th>
+                                        {% for pair_record in unmatched_records_target|first %}
+                                                <th>{{pair_record|upper}}</th>
+                                        {% endfor %}
+
+                                    {% endif %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if unmatched_records_target %}
+                                    {% for row in unmatched_records_target %}
+                                        <tr>
+                                            <td></td>
+                                            {% for key,value in row.items %}
+                                            {% if key != "id" %}
+
+                                            <td>{{value}}</td>
+                                            {% endif %}
+
+                                            {% endfor %}
+                                        </tr>
+                                    {% endfor %}
+                                {% endif %}
+                            
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+      </div><!--/. container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+  <!-- REQUIRED SCRIPTS -->
+  <!-- jQuery -->
+  <script src="/static/assets/plugins/jquery/jquery.min.js"></script>
+  <!-- Bootstrap -->
+  <script src="/static/assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <!-- overlayScrollbars -->
+  <script src="/static/assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+
+  <script src="/static/assets/plugins/datatables/jquery.dataTables.min.js"></script>
+  <script src="/static/assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+  <script src="/static/assets/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+  <script src="/static/assets/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+  <script src="/static/assets/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+  <script src="/static/assets/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+  <script src="/static/assets/plugins/jszip/jszip.min.js"></script>
+  <script src="/static/assets/plugins/pdfmake/pdfmake.min.js"></script>
+  <script src="/static/assets/plugins/pdfmake/vfs_fonts.js"></script>
+  <script src="/static/assets/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+  <script src="/static/assets/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+  <script src="/static/assets/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+  <!-- AdminLTE App -->
+  <script src="/static/assets/js/adminlte.js"></script>
+
+  <!-- PAGE PLUGINS -->
+  <!-- ChartJS -->
+  <script src="/static/assets/plugins/chart.js/Chart.min.js"></script>
+
+  <!-- PAGE SCRIPTS -->
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#checkAll').click(function() {
+            if (this.checked) {
+                $('.checkOne').each(function(){
+                    this.checked = true;
+                });
+            } else {
+                $('.checkOne').each(function(){
+                    this.checked = false;
+                });
+            }
+        });
+        var table = $('table#main').DataTable({
+            dom: 'Blfrtip',
+            stateSave: true,
+            lengthMenu: [
+                [ 10, 25, 50, 100, -1 ],
+                [ '10 rows', '25 rows', '50 rows', '100 rows', 'Show all' ]
+            ],
+            lengthChange: false,
+            responsive: true,
+            language: {
+                buttons: {
+                    colvisRestore: "RESET COLUMN"
+                }
+            },
+            buttons: [ 
+                {
+                    extend: 'excel',
+                    filename: function () { return document.querySelector("#report-name").textContent },
+                    exportOptions: { 
+                        columns: function(idx, data, node) {
+                            if ($(node).hasClass('noVis')) {
+                                return false;
+                            }
+                            tableID = $(node).closest('table').attr('id');
+                            return tableID === undefined? false : $(tableID).DataTable().column(idx).visible();
+                            //return $('table#main').DataTable().column(idx).visible();
+                        }
+                     }
+                },
+                {
+                    extend: 'csv',
+                    filename: function () { return document.querySelector("#report-name").textContent },
+                    exportOptions: { 
+                        columns: function(idx, data, node) {
+                            if ($(node).hasClass('noVis')) {
+                                return false;
+                            }
+                            tableID = $(node).closest('table').attr('id');
+                            return tableID === undefined? false : $(tableID).DataTable().column(idx).visible();
+                            //return $('table#main').DataTable().column(idx).visible();
+                        }
+                     }
+                },
+                {
+                    extend: 'colvis',
+                    postfixButtons: [ 'colvisRestore' ]
+                }, 
+                'pageLength',
+            ],
+            columnDefs: [ {
+                orderable: false,
+                targets: [ 0, 1 ]
+            } ],
+        });
+        table.buttons().container()
+        .appendTo( '#main_wrapper .col-md-6:eq(0)' );
+        table.columns.adjust().draw();
+    } );
+</script>
+
+{% endblock javascripts %}

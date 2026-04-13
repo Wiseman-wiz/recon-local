@@ -1,0 +1,16 @@
+{% if sample_accounts %}
+<br>
+<h4>Sample Accounts</h4>
+<div class="row">
+        {% for sample_name,sample_value in sample_accounts.items%}
+            <div class="column"style="padding:10px">
+                <h5>{{sample_name}}</h5>
+                {% for key,value in sample_value.items%}
+                    <div>{{key}}:{{value}}</div>
+
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </div>
+<div>
+{% endif %}
